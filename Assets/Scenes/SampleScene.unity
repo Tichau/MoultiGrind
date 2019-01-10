@@ -766,12 +766,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FactoryDefinitions:
+  - {fileID: 11400000, guid: 7dbd8e5854ca04742ac9e5c7e2f85b52, type: 2}
   - {fileID: 11400000, guid: d8c70e9bfbce7684c9086b11b103cad3, type: 2}
-  - {fileID: 11400000, guid: 97f48bc0b3228754cabf02b9f56bfed7, type: 2}
+  - {fileID: 11400000, guid: b7be0a414aa6ddf4abdb3e6b122e95e7, type: 2}
+  - {fileID: 11400000, guid: f7ae108783f610e4ba14d37c577e1ace, type: 2}
   - {fileID: 11400000, guid: 7d0b368cf59be3c43bc346a029183b3b, type: 2}
-  - {fileID: 11400000, guid: e42a92fb0a4021941b864b21d2275162, type: 2}
   - {fileID: 11400000, guid: a441a67638fde61428fae243f13e0a11, type: 2}
-  DurationBetweenTwoTicks: 0.5
+  DurationBetweenTwoTicks: 1
 --- !u!4 &2104889152
 Transform:
   m_ObjectHideFlags: 0

@@ -3,8 +3,6 @@
     using System.Collections;
     using System.Collections.Generic;
 
-    using DefaultNamespace;
-
     using UnityEngine;
 
     public class ResourceList : MonoBehaviour
@@ -25,7 +23,7 @@
             var player = Game.Instance.Players[0];
 
             int index = 0;
-            foreach (KeyValuePair<ResourceType, float> kvp in player.Resources)
+            foreach (Resource resource in player.Resources)
             {
                 UnityEngine.UI.Text resourceLine = null;
                 if (index < this.resourceLines.Count)
@@ -40,7 +38,7 @@
                     this.resourceLines.Add(resourceLine);
                 }
 
-                resourceLine.text = $"{kvp.Key}: {kvp.Value.Prettify()}";
+                resourceLine.text = $"{resource.Name}: {resource.Amount.ToString()}";
                 index++;
             }
 
