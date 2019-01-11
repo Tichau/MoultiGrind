@@ -40,7 +40,7 @@ public class Player
             factory.Productivity = new Number(1);
             foreach (var resource in factory.Definition.Inputs)
             {
-                factory.Productivity = Number.Min(factory.Productivity, this.Resources[(int)resource.Name].SpendableRatio);
+                factory.Productivity = Number.Min(factory.Productivity, this.Resources[(int)resource.Name].SpendableNeededAmountPercent);
             }
         }
 
@@ -48,8 +48,13 @@ public class Player
         for (int index = 0; index < this.Resources.Length; index++)
         {
             // Cut off needs (inputs) from what we produce (raw output from previous tick) and from amount.
-            this.Resources[index].Amount -= Number.Max(new Number(0), this.Resources[index].AmountNeeded - this.Resources[index].NetFromPreviousTick);
-            this.Resources[index].NetFromPreviousTick -= Number.Min(this.Resources[index].NetFromPreviousTick, this.Resources[index].AmountNeeded);
+            var upkeep = Number.Min(this.Resources[index].NetFromPreviousTick, this.Resources[index].AmountToSpend);
+            var stockDebit = Number.Max(this.Resources[index].AmountToSpend - this.Resources[index].NetFromPreviousTick, new Number(0));
+            this.Resources[index].Amount -= stockDebit;
+            this.Resources[index].NetFromPreviousTick -= upkeep;
+
+            // Compute the net (what is credited on the stock each turn).
+            this.Resources[index].Net = this.Resources[index].NetFromPreviousTick - stockDebit;
 
             // Gather remaining resources from previous tick in stock.
             this.Resources[index].Amount += this.Resources[index].NetFromPreviousTick;

@@ -15,7 +15,20 @@ public struct Resource
         this.Net = Number.Zero;
     }
 
+    public Number AmountToSpend => Number.Min(this.AmountNeeded, this.SpendableAmount);
+
     public Number SpendableAmount => this.Amount + this.NetFromPreviousTick;
 
-    public Number SpendableRatio => Number.Min(this.AmountNeeded, this.SpendableAmount) / this.SpendableAmount;
+    public Number SpendableNeededAmountPercent
+    {
+        get
+        {
+            if (this.AmountNeeded == Number.Zero)
+            {
+                return new Number(1);
+            }
+
+            return this.AmountToSpend / this.AmountNeeded;
+        }
+    }
 }

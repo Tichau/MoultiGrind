@@ -38,7 +38,7 @@
                     this.resourceLines.Add(resourceLine);
                 }
 
-                resourceLine.text = $"{resource.Name}: {resource.Amount.ToString()}";
+                resourceLine.text = $"{resource.Name}: {resource.Amount.ToString()} ({resource.Net})";
                 index++;
             }
 
