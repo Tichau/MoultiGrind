@@ -5,7 +5,7 @@ using UnityEditor;
 public class Player
 {
     public Resource[] Resources;
-    public Dictionary<FactoryDefinition, Factory> Factories = new Dictionary<FactoryDefinition, Factory>();
+    public Dictionary<RecipeDefinition, Factory> Factories = new Dictionary<RecipeDefinition, Factory>();
     
     public Player()
     {
@@ -17,7 +17,7 @@ public class Player
         }
     }
 
-    public void Tick()
+    public void Tick(Number timeElapsed)
     {
         // Compute needed amount per resource.
         for (int index = 0; index < this.Resources.Length; index++)
@@ -30,7 +30,8 @@ public class Player
         {
             foreach (var resource in factory.Definition.Inputs)
             {
-                this.Resources[(int)resource.Name].AmountNeeded += resource.Amount * factory.Count;
+                Number amountPerFactory = resource.Amount * timeElapsed / factory.Definition.Duration;
+                this.Resources[(int)resource.Name].AmountNeeded += amountPerFactory * factory.Count;
             }
         }
 
@@ -66,12 +67,13 @@ public class Player
         {
             foreach (var resource in factory.Definition.Outputs)
             {
-                this.Resources[(int)resource.Name].NetFromPreviousTick += resource.Amount * factory.Productivity * factory.Count;
+                Number amountPerFactory = resource.Amount * timeElapsed / factory.Definition.Duration;
+                this.Resources[(int)resource.Name].NetFromPreviousTick += amountPerFactory * factory.Productivity * factory.Count;
             }
         }
     }
 
-    public void CreateFactory(FactoryDefinition definition)
+    public void CreateFactory(RecipeDefinition definition)
     {
         if (!this.Factories.ContainsKey(definition))
         {

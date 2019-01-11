@@ -15,9 +15,10 @@ MonoBehaviour:
   Name: Science pack 1
   Inputs:
   - Name: 1
-    fixedPointAmount: 200
+    fixedPointAmount: 1000
   - Name: 4
-    fixedPointAmount: 200
+    fixedPointAmount: 1000
   Outputs:
   - Name: 5
-    fixedPointAmount: 200
+    fixedPointAmount: 1000
+  fixedPointDuration: 5000

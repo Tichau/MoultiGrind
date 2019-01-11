@@ -1,13 +1,18 @@
 ﻿using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Factory", menuName = "Factory Definition", order = 1)]
-public class FactoryDefinition : ScriptableObject
+[CreateAssetMenu(fileName = "Recipe", menuName = "Recipe Definition", order = 1)]
+public class RecipeDefinition : ScriptableObject
 {
-    public string Name = "New Factory";
+    public string Name = "New Recipe";
 
     public ResourceDefinition[] Inputs;
     public ResourceDefinition[] Outputs;
+
+    [SerializeField]
+    private long fixedPointDuration;
+
+    public Number Duration => Number.FromFixedPoint(this.fixedPointDuration);
 }
 
 [Serializable]

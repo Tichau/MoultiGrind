@@ -15,7 +15,8 @@ MonoBehaviour:
   Name: Iron Plate
   Inputs:
   - Name: 2
-    fixedPointAmount: 286
+    fixedPointAmount: 1000
   Outputs:
   - Name: 3
-    fixedPointAmount: 286
+    fixedPointAmount: 1000
+  fixedPointDuration: 3500

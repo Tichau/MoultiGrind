@@ -26,9 +26,9 @@ public class ResourceDefinitionDrawer : PropertyDrawer
 
         //// Draw fields - passs GUIContent.none to each so they are drawn without labels
         var amountProperty = property.FindPropertyRelative("fixedPointAmount");
-        float ratio = amountProperty.longValue / 1000f;
+        double ratio = amountProperty.longValue / 1000.0;
 
-        ratio = EditorGUI.FloatField(rect, ratio);
+        ratio = EditorGUI.DoubleField(rect, ratio);
 
         amountProperty.longValue = (long)Math.Round(ratio * 1000);
 

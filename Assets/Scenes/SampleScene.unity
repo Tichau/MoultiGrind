@@ -765,7 +765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c0fe2637757324abb08f998f4c2261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FactoryDefinitions:
+  RecipeDefinitions:
   - {fileID: 11400000, guid: 7dbd8e5854ca04742ac9e5c7e2f85b52, type: 2}
   - {fileID: 11400000, guid: d8c70e9bfbce7684c9086b11b103cad3, type: 2}
   - {fileID: 11400000, guid: b7be0a414aa6ddf4abdb3e6b122e95e7, type: 2}

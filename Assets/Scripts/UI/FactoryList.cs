@@ -25,7 +25,7 @@
         private void Update()
         {
             // Buildable factories
-            this.DisplayList(Game.Instance.FactoryDefinitions, this.factoryButtons, this.createFactoryPrefab, (def, ui) => ui.Definition = def);
+            this.DisplayList(Game.Instance.RecipeDefinitions, this.factoryButtons, this.createFactoryPrefab, (def, ui) => ui.Definition = def);
 
             // Display factories
             var player = Game.Instance.Players[0];

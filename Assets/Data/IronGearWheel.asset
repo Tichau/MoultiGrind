@@ -15,7 +15,8 @@ MonoBehaviour:
   Name: Iron Gear Wheel
   Inputs:
   - Name: 3
-    fixedPointAmount: 4000
+    fixedPointAmount: 2000
   Outputs:
   - Name: 4
-    fixedPointAmount: 2000
+    fixedPointAmount: 1000
+  fixedPointDuration: 500

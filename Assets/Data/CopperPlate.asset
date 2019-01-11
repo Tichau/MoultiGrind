@@ -15,7 +15,8 @@ MonoBehaviour:
   Name: Copper Plate
   Inputs:
   - Name: 0
-    fixedPointAmount: 286
+    fixedPointAmount: 1000
   Outputs:
   - Name: 1
-    fixedPointAmount: 286
+    fixedPointAmount: 1000
+  fixedPointDuration: 3500

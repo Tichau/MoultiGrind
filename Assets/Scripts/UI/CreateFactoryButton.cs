@@ -8,9 +8,9 @@
 
     public class CreateFactoryButton : MonoBehaviour
     {
-        private FactoryDefinition definition;
+        private RecipeDefinition definition;
 
-        public FactoryDefinition Definition
+        public RecipeDefinition Definition
         {
             get
             {

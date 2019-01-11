@@ -16,4 +16,5 @@ MonoBehaviour:
   Inputs: []
   Outputs:
   - Name: 0
-    fixedPointAmount: 30
+    fixedPointAmount: 1000
+  fixedPointDuration: 20833

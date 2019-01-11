@@ -1,11 +1,11 @@
 ﻿public class Factory
 {
-    public FactoryDefinition Definition;
+    public RecipeDefinition Definition;
 
     public Number Productivity;
     public int Count;
 
-    public Factory(FactoryDefinition definition)
+    public Factory(RecipeDefinition definition)
     {
         this.Definition = definition;
     }
