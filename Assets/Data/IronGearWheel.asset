@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6546fc489c144fe6b7288e0a3394bd70, type: 3}
-  m_Name: YiestCulture
+  m_Name: IronGearWheel
   m_EditorClassIdentifier: 
-  Name: Yiest Culture
-  Inputs: []
-  Outputs:
+  Name: Iron Gear Wheel
+  Inputs:
   - Name: 3
-    Amount: 0.01
+    fixedPointAmount: 4000
+  Outputs:
+  - Name: 4
+    fixedPointAmount: 2000

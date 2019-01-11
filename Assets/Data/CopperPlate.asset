@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6546fc489c144fe6b7288e0a3394bd70, type: 3}
-  m_Name: Field
+  m_Name: CopperPlate
   m_EditorClassIdentifier: 
-  Name: Field
-  Inputs: []
+  Name: Copper Plate
+  Inputs:
+  - Name: 0
+    fixedPointAmount: 286
   Outputs:
-  - Name: Wheat
-    Amount: 1
+  - Name: 1
+    fixedPointAmount: 286
