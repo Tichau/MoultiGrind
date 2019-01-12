@@ -29,7 +29,7 @@
 
             // Display factories
             var player = Game.Instance.Players[0];
-            this.DisplayList(player.Factories, this.factoryLines, this.factoryPrefab, (factory, ui) => ui.text = factory.Value.ToString());
+            this.DisplayList(player.Factories, this.factoryLines, this.factoryPrefab, (factory, ui) => ui.text = factory.ToString());
         }
 
         private void DisplayList<TGame, TUI>(IEnumerable<TGame> gameElements, List<TUI> uiElements, GameObject prefab, Action<TGame, TUI> updateElement)

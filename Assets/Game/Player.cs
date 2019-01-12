@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 
 public class Player
 {
     public Resource[] Resources;
-    public Dictionary<RecipeDefinition, Factory> Factories = new Dictionary<RecipeDefinition, Factory>();
+    public List<Factory> Factories = new List<Factory>();
     
     public Player()
     {
@@ -27,7 +28,7 @@ public class Player
         }
         
         // Compute total needed amount of resources.
-        foreach (var factory in this.Factories.Values)
+        foreach (var factory in this.Factories)
         {
             foreach (var resource in factory.Definition.Inputs)
             {
@@ -37,7 +38,7 @@ public class Player
         }
 
         // Compute factories productivity.
-        foreach (var factory in this.Factories.Values)
+        foreach (var factory in this.Factories)
         {
             factory.Productivity = new Number(1);
             foreach (var resource in factory.Definition.Inputs)
@@ -70,7 +71,7 @@ public class Player
         }
 
         // Compute raw output (that will be used for next tick).
-        foreach (var factory in this.Factories.Values)
+        foreach (var factory in this.Factories)
         {
             foreach (var resource in factory.Definition.Outputs)
             {
@@ -82,11 +83,13 @@ public class Player
 
     public void CreateFactory(RecipeDefinition definition)
     {
-        if (!this.Factories.ContainsKey(definition))
+        var factory = this.Factories.Find(match => match.Definition == definition);
+        if (factory == null)
         {
-            this.Factories.Add(definition, new Factory(definition));
+            factory = new Factory(definition);
+            this.Factories.Add(factory);
         }
 
-        this.Factories[definition].Count++;
+        factory.Count++;
     }
 }
