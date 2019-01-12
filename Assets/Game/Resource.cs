@@ -7,6 +7,7 @@ public struct Resource
 
     public Number NetFromPreviousTick;
     public Number AmountNeeded;
+    public Number AmountToDebit;
 
     public Resource(ResourceType name, Number amount)
     {

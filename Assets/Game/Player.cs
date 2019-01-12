@@ -23,6 +23,7 @@ public class Player
         for (int index = 0; index < this.Resources.Length; index++)
         {
             this.Resources[index].AmountNeeded = new Number(0);
+            this.Resources[index].AmountToDebit = new Number(0);
         }
         
         // Compute total needed amount of resources.
@@ -43,14 +44,20 @@ public class Player
             {
                 factory.Productivity = Number.Min(factory.Productivity, this.Resources[(int)resource.Name].SpendableNeededAmountPercent);
             }
+
+            foreach (var resource in factory.Definition.Inputs)
+            {
+                Number amountPerFactory = resource.Amount * timeElapsed / factory.Definition.Duration;
+                this.Resources[(int) resource.Name].AmountToDebit += amountPerFactory * factory.Productivity * factory.Count;
+            }
         }
 
         // Cut off needs and gather remaining resources.
         for (int index = 0; index < this.Resources.Length; index++)
         {
             // Cut off needs (inputs) from what we produce (raw output from previous tick) and from amount.
-            var upkeep = Number.Min(this.Resources[index].NetFromPreviousTick, this.Resources[index].AmountToSpend);
-            var stockDebit = Number.Max(this.Resources[index].AmountToSpend - this.Resources[index].NetFromPreviousTick, new Number(0));
+            var upkeep = Number.Min(this.Resources[index].NetFromPreviousTick, this.Resources[index].AmountToDebit);
+            var stockDebit = Number.Max(this.Resources[index].AmountToDebit - this.Resources[index].NetFromPreviousTick, new Number(0));
             this.Resources[index].Amount -= stockDebit;
             this.Resources[index].NetFromPreviousTick -= upkeep;
 
