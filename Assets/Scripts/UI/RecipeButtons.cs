@@ -21,7 +21,7 @@
             set
             {
                 this.definition = value;
-                this.RecipeName.text = this.definition.Name;
+                this.RecipeName.text = this.definition.name;
             }
         }
 

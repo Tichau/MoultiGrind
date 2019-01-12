@@ -12,7 +12,7 @@
 
     public override string ToString()
     {
-        string name = $"{this.Definition.Name} ({this.Count})";
+        string name = $"{this.Definition.name} ({this.Count})";
 
         if (this.Productivity < new Number(1))
         {

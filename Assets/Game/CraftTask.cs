@@ -13,6 +13,6 @@
 
     public override string ToString()
     {
-        return $"{this.Definition.Name} ({(float)this.Progress:P0})";
+        return $"{this.Definition.name} ({(float)this.Progress:P0})";
     }
 }

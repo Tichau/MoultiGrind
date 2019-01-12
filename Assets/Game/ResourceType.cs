@@ -2,8 +2,11 @@
 {
     CopperOre,
     CopperPlate,
+    CopperCable,
     IronOre,
     IronPlate,
     IronGearWheel,
-    SciencePack1
+    SciencePack1,
+    ElectronicCircuit,
+    AssemblingMachine1
 }

@@ -4,7 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Recipe", menuName = "Recipe Definition", order = 1)]
 public class RecipeDefinition : ScriptableObject
 {
-    public string Name = "New Recipe";
+    [TextArea]
+    public string Description;
 
     public ResourceDefinition[] Inputs;
     public ResourceDefinition[] Outputs;

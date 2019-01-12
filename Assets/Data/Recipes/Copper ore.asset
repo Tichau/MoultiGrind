@@ -10,13 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6546fc489c144fe6b7288e0a3394bd70, type: 3}
-  m_Name: IronPlate
+  m_Name: Copper ore
   m_EditorClassIdentifier: 
-  Name: Iron Plate
-  Inputs:
-  - Name: 2
-    fixedPointAmount: 1000
+  Description: 
+  Inputs: []
   Outputs:
-  - Name: 3
+  - Name: 0
     fixedPointAmount: 1000
-  fixedPointDuration: 3500
+  fixedPointDuration: 20833

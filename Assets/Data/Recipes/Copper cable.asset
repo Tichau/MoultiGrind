@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6546fc489c144fe6b7288e0a3394bd70, type: 3}
-  m_Name: CopperOre
+  m_Name: Copper cable
   m_EditorClassIdentifier: 
-  Name: Copper Ore
-  Inputs: []
-  Outputs:
-  - Name: 0
+  Description: 
+  Inputs:
+  - Name: 1
     fixedPointAmount: 1000
-  fixedPointDuration: 20833
+  Outputs:
+  - Name: 2
+    fixedPointAmount: 2000
+  fixedPointDuration: 500

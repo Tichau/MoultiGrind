@@ -9,12 +9,14 @@ public class RecipeDefinitionDrawer : Editor
     private SerializedProperty inputProperty;
     private ReorderableList inputList;
 
+    private SerializedProperty descriptionProperty;
+    private SerializedProperty durationProperty;
     private SerializedProperty outputProperty;
     private ReorderableList outputList;
-    private SerializedProperty durationProperty;
 
     private void OnEnable()
     {
+        this.descriptionProperty = this.serializedObject.FindProperty("Description");
         this.durationProperty = this.serializedObject.FindProperty("fixedPointDuration");
 
         this.inputProperty = this.serializedObject.FindProperty("Inputs");
@@ -53,8 +55,7 @@ public class RecipeDefinitionDrawer : Editor
     {
         RecipeDefinition myTarget = (RecipeDefinition)target;
         
-        var nameProperty = this.serializedObject.FindProperty("Name");
-        EditorGUILayout.PropertyField(nameProperty);
+        EditorGUILayout.PropertyField(descriptionProperty);
 
         var previousColor = GUI.color;
         if (this.durationProperty.longValue == 0)
