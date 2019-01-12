@@ -556,3 +556,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RecipeName: {fileID: 2157191278122828422}
+  CraftButton: {fileID: 2157191276969145382}
+  FactoryButton: {fileID: 2157191278480176380}
