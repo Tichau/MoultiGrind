@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEditor;
 
 public class Player
 {
     public Resource[] Resources;
     public List<Factory> Factories = new List<Factory>();
-    
+    public List<CraftTask> ConstructionQueue = new List<CraftTask>();
+
     public Player()
     {
         Array enumValues = typeof(ResourceType).GetEnumValues();
@@ -20,6 +22,28 @@ public class Player
 
     public void Tick(Number timeElapsed)
     {
+        // Work on craft tasks
+        Number workTime = timeElapsed;
+        for (var index = 0; index < this.ConstructionQueue.Count && workTime > Number.Zero; index++)
+        {
+            var craftTask = this.ConstructionQueue[index];
+            Number timeToSpend = Number.Min(workTime, craftTask.Definition.Duration - craftTask.TimeSpent);
+            craftTask.TimeSpent += timeToSpend;
+            workTime -= timeToSpend;
+
+            if (craftTask.Progress >= new Number(1))
+            {
+                // Craft task terminated.
+                foreach (var resource in craftTask.Definition.Outputs)
+                {
+                    this.Resources[(int) resource.Name].Amount += resource.Amount;
+                }
+
+                this.ConstructionQueue.RemoveAt(index);
+                index--;
+            }
+        }
+
         // Compute needed amount per resource.
         for (int index = 0; index < this.Resources.Length; index++)
         {
@@ -91,5 +115,35 @@ public class Player
         }
 
         factory.Count++;
+    }
+
+    public bool CanCraftRecipe(RecipeDefinition definition)
+    {
+        bool resourcePrerequisites = true;
+        foreach (var resource in definition.Inputs)
+        {
+            resourcePrerequisites &= resource.Amount <= this.Resources[(int) resource.Name].Amount;
+        }
+
+        return resourcePrerequisites;
+    }
+
+    public bool CraftRecipe(RecipeDefinition definition)
+    {
+        if (!this.CanCraftRecipe(definition))
+        {
+            return false;
+        }
+
+        foreach (var resource in definition.Inputs)
+        {
+            if (resource.Amount >= this.Resources[(int) resource.Name].Amount)
+            {
+                this.Resources[(int) resource.Name].Amount -= resource.Amount;
+            }
+        }
+
+        this.ConstructionQueue.Add(new CraftTask(definition));
+        return true;
     }
 }

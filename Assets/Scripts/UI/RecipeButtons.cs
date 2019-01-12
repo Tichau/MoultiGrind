@@ -6,8 +6,10 @@
     using UnityEngine;
     using UnityEngine.UI;
 
-    public class CreateFactoryButton : MonoBehaviour
+    public class RecipeButtons : MonoBehaviour
     {
+        public Text RecipeName;
+
         private RecipeDefinition definition;
 
         public RecipeDefinition Definition
@@ -20,8 +22,18 @@
             set
             {
                 this.definition = value;
-                this.GetComponentInChildren<Text>().text = this.definition.Name;
+                this.RecipeName.text = this.definition.Name;
             }
+        }
+
+        private void Awake()
+        {
+            Debug.Assert(this.RecipeName != null);
+        }
+
+        public void CraftRecipe()
+        {
+            Game.Instance.Players[0].CraftRecipe(this.Definition);
         }
 
         public void CreateFactory()
