@@ -5,33 +5,25 @@
     using System.Collections.Generic;
     using UnityEngine;
 
-    public class FactoryList : MonoBehaviour
+    public class TechnologyList : MonoBehaviour
     {
-        private readonly List<RecipeButtons> recipeButtons = new List<RecipeButtons>();
-        private readonly List<UnityEngine.UI.Text> factoryLines = new List<UnityEngine.UI.Text>();
+        private readonly List<TechnologyButton> technologyButtons = new List<TechnologyButton>();
 
         [SerializeField]
-        private GameObject recipeLinePrefab;
+        private GameObject technologyPrefab;
 
-        [SerializeField]
-        private GameObject factoryPrefab;
-
-        private Predicate<RecipeDefinition> displayPredicate = def => Game.Instance.Players[0].IsRecipeAvailable(def);
+        private Predicate<KeyValuePair<TechnologyDefinition, ResearchStatus>> displayPredicate = def => def.Value == ResearchStatus.Available || def.Value == ResearchStatus.InProgress;
 
         private void Start()
         {
-            Debug.Assert(this.recipeLinePrefab != null, "Factory prefab should be set.");
-            Debug.Assert(this.factoryPrefab != null, "Factory prefab should be set.");
+            Debug.Assert(this.technologyPrefab != null, "Technology prefab should be set.");
         }
 
         private void Update()
         {
-            // Buildable factories
-            this.DisplayList(Game.Instance.RecipeDefinitions, this.recipeButtons, this.recipeLinePrefab, this.displayPredicate ,(def, ui) => ui.Definition = def);
-
             // Display factories
             var player = Game.Instance.Players[0];
-            this.DisplayList(player.Factories, this.factoryLines, this.factoryPrefab, null, (factory, ui) => ui.text = factory.ToString());
+            this.DisplayList(player.TechnologyStatesByDefinition, this.technologyButtons, this.technologyPrefab, this.displayPredicate, (def, ui) => ui.Definition = def.Key);
         }
 
         private void DisplayList<TGame, TUI>(IEnumerable<TGame> gameElements, List<TUI> uiElements, GameObject prefab, Predicate<TGame> displayPredicate, Action<TGame, TUI> updateElement)

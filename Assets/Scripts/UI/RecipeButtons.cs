@@ -44,6 +44,7 @@
         private void Update()
         {
             this.CraftButton.interactable = Game.Instance.Players[0].CanCraftRecipe(this.Definition);
+            this.FactoryButton.interactable = Game.Instance.Players[0].CanCreateFactory(this.Definition);
         }
     }
 }

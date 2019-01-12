@@ -9,6 +9,7 @@ public class Player
     public Resource[] Resources;
     public List<Factory> Factories = new List<Factory>();
     public List<CraftTask> ConstructionQueue = new List<CraftTask>();
+    public Dictionary<TechnologyDefinition, ResearchStatus> TechnologyStatesByDefinition = new Dictionary<TechnologyDefinition, ResearchStatus>();
 
     public Player()
     {
@@ -17,6 +18,11 @@ public class Player
         foreach (var enumValue in enumValues)
         {
             this.Resources[(int)enumValue] = new Resource((ResourceType)enumValue, Number.Zero);
+        }
+
+        foreach (var technology in Game.Instance.TechnologyDefinitions)
+        {
+            this.TechnologyStatesByDefinition.Add(technology, ResearchStatus.Available);
         }
     }
 
@@ -105,8 +111,41 @@ public class Player
         }
     }
 
+    public bool IsRecipeAvailable(RecipeDefinition definition)
+    {
+        foreach (var technology in TechnologyStatesByDefinition)
+        {
+            foreach (var unlock in technology.Key.Unlocks)
+            {
+                if (unlock == definition)
+                {
+                    return technology.Value == ResearchStatus.Done;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public bool CanCreateFactory(RecipeDefinition definition)
+    {
+        if (this.Resources[(int) ResourceType.AssemblingMachine1].Amount < new Number(1))
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
     public void CreateFactory(RecipeDefinition definition)
     {
+        if (!this.CanCreateFactory(definition))
+        {
+            return;
+        }
+
+        this.Resources[(int)ResourceType.AssemblingMachine1].Amount -= new Number(1);
+
         var factory = this.Factories.Find(match => match.Definition == definition);
         if (factory == null)
         {
@@ -128,22 +167,49 @@ public class Player
         return resourcePrerequisites;
     }
 
-    public bool CraftRecipe(RecipeDefinition definition)
+    public void CraftRecipe(RecipeDefinition definition)
     {
         if (!this.CanCraftRecipe(definition))
         {
-            return false;
+            return;
         }
 
         foreach (var resource in definition.Inputs)
         {
-            if (resource.Amount >= this.Resources[(int) resource.Name].Amount)
-            {
-                this.Resources[(int) resource.Name].Amount -= resource.Amount;
-            }
+            this.Resources[(int) resource.Name].Amount -= resource.Amount;
         }
 
         this.ConstructionQueue.Add(new CraftTask(definition));
-        return true;
+    }
+
+    public bool CanResearchTechnology(TechnologyDefinition definition)
+    {
+        if (this.TechnologyStatesByDefinition[definition] != ResearchStatus.Available)
+        {
+            return false;
+        }
+
+        bool resourcePrerequisites = true;
+        foreach (var resource in definition.Costs)
+        {
+            resourcePrerequisites &= resource.Amount <= this.Resources[(int)resource.Name].Amount;
+        }
+
+        return resourcePrerequisites;
+    }
+
+    public void ResearchTechnology(TechnologyDefinition definition)
+    {
+        if (!this.CanResearchTechnology(definition))
+        {
+            return;
+        }
+
+        foreach (var resource in definition.Costs)
+        {
+            this.Resources[(int) resource.Name].Amount -= resource.Amount;
+        }
+
+        this.TechnologyStatesByDefinition[definition] = ResearchStatus.Done;
     }
 }

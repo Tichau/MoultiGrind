@@ -25,6 +25,11 @@
             int index = 0;
             foreach (Resource resource in player.Resources)
             {
+                if (resource.Amount == Number.Zero)
+                {
+                    continue;
+                }
+
                 UnityEngine.UI.Text resourceLine = null;
                 if (index < this.resourceLines.Count)
                 {
@@ -38,7 +43,15 @@
                     this.resourceLines.Add(resourceLine);
                 }
 
-                resourceLine.text = $"{resource.Name}: {resource.Amount.ToString()} ({resource.Net})";
+                if (resource.Net == Number.Zero)
+                {
+                    resourceLine.text = $"{resource.Name}: {resource.Amount.ToString()}";
+                }
+                else
+                {
+                    resourceLine.text = $"{resource.Name}: {resource.Amount.ToString()} ({resource.Net})";
+                }
+
                 index++;
             }
 

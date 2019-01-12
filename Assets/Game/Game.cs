@@ -9,8 +9,10 @@ public class Game : MonoBehaviour
     public readonly List<Player> Players = new List<Player>();
 
     public RecipeDefinition[] RecipeDefinitions;
+    public TechnologyDefinition[] TechnologyDefinitions;
 
     public float DurationBetweenTwoTicks = 1f;
+    public ulong TimeElapsedPerTick = 1;
 
     private float lastTickDate = 0;
 
@@ -35,7 +37,7 @@ public class Game : MonoBehaviour
         {
             foreach (var player in this.Players)
             {
-                player.Tick(new Number(1)); // 1 second per tick
+                player.Tick(new Number(TimeElapsedPerTick));
             }
 
             this.lastTickDate = Time.time;
