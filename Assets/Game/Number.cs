@@ -206,6 +206,11 @@ public struct Number : IEquatable<Number>, IComparable<Number>
 
     public override string ToString()
     {
+        return this.ToString(false);
+    }
+
+    public string ToString(bool alwaysDisplaySign)
+    {
         var absFixedPoint = this.fixedPoint;
         int sign = 1;
         if (absFixedPoint < 0)
@@ -235,12 +240,21 @@ public struct Number : IEquatable<Number>, IComparable<Number>
 
         displayedValue *= sign;
 
-        if (exponent <= Exponent.None)
+        string stringValue = $"{displayedValue}";
+        if (alwaysDisplaySign)
         {
-            return $"{displayedValue}";
+            if (displayedValue > 0)
+            {
+                stringValue = "+" + displayedValue;
+            }
         }
 
-        return $"{displayedValue}{Abbreviation(exponent)}";
+        if (exponent <= Exponent.None)
+        {
+            return stringValue;
+        }
+
+        return $"{stringValue}{Abbreviation(exponent)}";
     }
 
     private string Abbreviation(Exponent exponent)
