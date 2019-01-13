@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: gableroux/unity3d:2018.3.0f2
+    steps:
+      - checkout
+      - run:
+          name: Open Unity Project
+          command: /opt/Unity/Editor/Unity -batchmode -quit -projectPath /root/project
+
+          
