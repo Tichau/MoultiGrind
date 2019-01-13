@@ -156,6 +156,24 @@ public class Player
         factory.Count++;
     }
 
+    public bool CanDestroyFactory(RecipeDefinition definition)
+    {
+        return this.Factories.Any(factory => factory.Definition == definition && factory.Count > 0);
+    }
+
+    public void DestroyFactory(RecipeDefinition definition)
+    {
+        if (!this.CanDestroyFactory(definition))
+        {
+            return;
+        }
+
+        this.Resources[(int)ResourceType.AssemblingMachine1].Amount += new Number(1);
+
+        var factory = this.Factories.Find(match => match.Definition == definition);
+        factory.Count--;
+    }
+
     public bool CanCraftRecipe(RecipeDefinition definition)
     {
         bool resourcePrerequisites = true;
