@@ -3,7 +3,7 @@
     using UnityEngine;
     using UnityEngine.UI;
 
-    public class TechnologyButton : MonoBehaviour
+    public class TechnologyLine : MonoBehaviour
     {
         public Text Name;
         public Button ResearchButton;
