@@ -892,7 +892,7 @@ MonoBehaviour:
   TechnologyDefinitions:
   - {fileID: 11400000, guid: 2c39be7106ba74743b1ccaa98b08ea6c, type: 2}
   DurationBetweenTwoTicks: 1
-  TimeElapsedPerTick: 10
+  TimeElapsedPerTick: 1
 --- !u!4 &2104889152
 Transform:
   m_ObjectHideFlags: 0
