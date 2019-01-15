@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using UnityEngine;
+
+namespace UI
 {
     public abstract class UIList<TUI> : UnityEngine.MonoBehaviour
         where TUI : UnityEngine.MonoBehaviour
@@ -8,36 +10,46 @@
         [UnityEngine.SerializeField]
         private UnityEngine.GameObject prefab;
 
-        protected virtual void Start()
+        [UnityEngine.SerializeField]
+        private UnityEngine.Transform listHolder;
+
+        protected virtual void Awake()
         {
             UnityEngine.Debug.Assert(this.prefab != null, "Prefab should be set.");
+        }
+
+        protected virtual void Start()
+        {
         }
 
         protected void DisplayList<TGame>(System.Collections.Generic.IEnumerable<TGame> gameElements, System.Predicate<TGame> displayPredicate, System.Action<TGame, TUI> updateElement)
         {
             int index = 0;
-            foreach (var element in gameElements)
+            if (gameElements != null)
             {
-                if (displayPredicate != null && !displayPredicate.Invoke(element))
+                foreach (var element in gameElements)
                 {
-                    continue;
-                }
+                    if (displayPredicate != null && !displayPredicate.Invoke(element))
+                    {
+                        continue;
+                    }
 
-                TUI line = default(TUI);
-                if (index < uiElements.Count)
-                {
-                    line = this.uiElements[index];
-                }
-                else
-                {
-                    var gameObject = UnityEngine.GameObject.Instantiate(prefab);
-                    gameObject.transform.SetParent(this.transform, false);
-                    line = gameObject.GetComponent<TUI>();
-                    uiElements.Add(line);
-                }
+                    TUI line = default(TUI);
+                    if (index < uiElements.Count)
+                    {
+                        line = this.uiElements[index];
+                    }
+                    else
+                    {
+                        var gameObject = UnityEngine.GameObject.Instantiate(prefab);
+                        gameObject.transform.SetParent(this.listHolder, false);
+                        line = gameObject.GetComponent<TUI>();
+                        uiElements.Add(line);
+                    }
 
-                updateElement.Invoke(element, line);
-                index++;
+                    updateElement.Invoke(element, line);
+                    index++;
+                }
             }
 
             for (int remainingIndex = uiElements.Count - 1; remainingIndex >= index; remainingIndex--)
