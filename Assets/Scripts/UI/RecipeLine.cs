@@ -32,6 +32,7 @@
             {
                 this.definition = value;
                 this.RecipeName.text = this.definition.name;
+                this.GetComponentInChildren<TooltipInteractible>().Data = value;
             }
         }
 

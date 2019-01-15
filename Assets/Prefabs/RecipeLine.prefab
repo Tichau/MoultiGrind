@@ -370,6 +370,7 @@ GameObject:
   - component: {fileID: 2157191278122828423}
   - component: {fileID: 2157191278122828421}
   - component: {fileID: 2157191278122828422}
+  - component: {fileID: 4197392504500253973}
   m_Layer: 0
   m_Name: Name
   m_TagString: Untagged
@@ -393,8 +394,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -84, y: 0}
-  m_SizeDelta: {x: -168, y: 40}
+  m_AnchoredPosition: {x: -125, y: 0}
+  m_SizeDelta: {x: -250, y: 40}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2157191278122828421
 CanvasRenderer:
@@ -438,6 +439,18 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Recipe Name
+--- !u!114 &4197392504500253973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2157191278122828424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 915760296526bd34d8e98c0222c49ae0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2831411583055681543
 GameObject:
   m_ObjectHideFlags: 0

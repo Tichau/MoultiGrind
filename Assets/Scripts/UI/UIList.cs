@@ -8,10 +8,10 @@ namespace UI
         private readonly System.Collections.Generic.List<TUI> uiElements = new System.Collections.Generic.List<TUI>();
 
         [UnityEngine.SerializeField]
-        private UnityEngine.GameObject prefab;
+        private UnityEngine.GameObject prefab = null;
 
         [UnityEngine.SerializeField]
-        private UnityEngine.Transform listHolder;
+        private UnityEngine.Transform listHolder = null;
 
         protected virtual void Awake()
         {
