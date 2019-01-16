@@ -20,6 +20,7 @@
             set
             {
                 this.definition = value;
+                this.GetComponentInChildren<TooltipInteractible>().Data = value;
                 this.Name.text = this.definition.name;
             }
         }

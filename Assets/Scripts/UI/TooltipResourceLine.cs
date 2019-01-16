@@ -8,20 +8,20 @@ public class TooltipResourceLine : MonoBehaviour
     public Text Name;
     public Text Amount;
 
-    private ResourceDefinition resourceDefinition;
-
-    public ResourceDefinition ResourceDefinition
+    public object Definition
     {
-        get
-        {
-            return this.resourceDefinition;
-        }
-
         set
         {
-            this.resourceDefinition = value;
-            this.Name.text = this.resourceDefinition.Name.ToString();
-            this.Amount.text = this.resourceDefinition.Amount.ToString();
+            if (value is ResourceDefinition resourceDefinition)
+            {
+                this.Name.text = resourceDefinition.Name.ToString();
+                this.Amount.text = resourceDefinition.Amount.ToString();
+            }
+            else if (value is RecipeDefinition recipeDefinition)
+            {
+                this.Name.text = recipeDefinition.name;
+                this.Amount.text = string.Empty;
+            }
         }
     }
 

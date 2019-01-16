@@ -7,11 +7,11 @@
 
     public class TooltipResourceDefinitionList : UIList<TooltipResourceLine>
     {
-        public ResourceDefinition[] ResourceDefinitions { get; set; }
+        public IEnumerable<object> Definitions { get; set; }
 
         private void Update()
         {
-            this.DisplayList(this.ResourceDefinitions, null, (def, ui) => ui.ResourceDefinition = def);
+            this.DisplayList(this.Definitions, null, (def, ui) => ui.Definition = def);
         }
     }
 }
