@@ -22,6 +22,7 @@
             set
             {
                 this.resourceType = value;
+                this.GetComponent<TooltipInteractible>().Data = this.resourceType;
                 this.Name.text = this.resourceType.ToString();
             }
         }
@@ -41,21 +42,7 @@
             var net = this.activePlayer.Resources[(int)this.resourceType].Net;
 
             this.Amount.text = amount.ToString();
-
-            if (net == Number.Zero)
-            {
-                this.Net.text = string.Empty;
-            }
-            else if (net > Number.Zero)
-            {
-                this.Net.color = Color.green;
-                this.Net.text = net.ToString(true);
-            }
-            else
-            {
-                this.Net.color = Color.red;
-                this.Net.text = net.ToString(true);
-            }
+            this.Net.SetTextToSignedNumber(net);
         }
     }
 }

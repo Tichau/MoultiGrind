@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.ExceptionServices;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -39,6 +40,13 @@ namespace UI
         [SerializeField]
         private TooltipResourceDefinitionList unlocks = null;
 
+
+        [SerializeField]
+        private RectTransform resourceTooltip = null;
+
+        [SerializeField]
+        private TooltipResourceDefinitionList netOperations = null;
+
         private void Start()
         {
             Debug.Assert(this.recipeTooltip != null, "recipeTooltip should be set.");
@@ -59,6 +67,10 @@ namespace UI
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerData, results);
 
+            bool displayResourceTooltip = false;
+            bool displayRecipeTooltip = false;
+            bool displayTechnologyTooltip = false;
+
             foreach (var result in results)
             {
                 var uiObject = result.gameObject;
@@ -68,20 +80,27 @@ namespace UI
                     var tooltipInteractible = uiObject.GetComponent<TooltipInteractible>();
                     if (tooltipInteractible != null)
                     {
+                        if (tooltipInteractible.Data is ResourceType resourceType)
+                        {
+                            this.resourceTooltip.GetComponent<RectTransform>().anchoredPosition = position;
+                            displayResourceTooltip = this.DisplayResourceTooltip(resourceType);
+                            break;
+                        }
+
                         if (tooltipInteractible.Data is RecipeDefinition recipeDefinition)
                         {
                             this.recipeTooltip.GetComponent<RectTransform>().anchoredPosition = position;
                             this.DisplayRecipeTooltip(recipeDefinition);
-                            this.recipeTooltip.gameObject.SetActive(true);
-                            return;
+                            displayRecipeTooltip = true;
+                            break;
                         }
 
                         if (tooltipInteractible.Data is TechnologyDefinition technologyDefinition)
                         {
                             this.technologyTooltip.GetComponent<RectTransform>().anchoredPosition = position;
                             this.DisplayTechnologyTooltip(technologyDefinition);
-                            this.technologyTooltip.gameObject.SetActive(true);
-                            return;
+                            displayTechnologyTooltip = true;
+                            break;
                         }
                     }
 
@@ -90,8 +109,9 @@ namespace UI
                 
             }
 
-            this.recipeTooltip.gameObject.SetActive(false);
-            this.technologyTooltip.gameObject.SetActive(false);
+            this.resourceTooltip.gameObject.SetActive(displayResourceTooltip);
+            this.recipeTooltip.gameObject.SetActive(displayRecipeTooltip);
+            this.technologyTooltip.gameObject.SetActive(displayTechnologyTooltip);
         }
 
         private void DisplayTechnologyTooltip(TechnologyDefinition technologyDefinition)
@@ -128,11 +148,24 @@ namespace UI
             this.technologyTooltip.sizeDelta = new Vector2(this.technologyTooltip.sizeDelta.x, costsTransform.rect.height + unlocksTransform.rect.height + descriptionTransform.rect.height + marginCount * margin);
         }
 
-        private void DisplayResourceTooltip(ResourceType resourceType)
+        private bool DisplayResourceTooltip(ResourceType resourceType)
         {
+            const int lineHeight = 20;
+            const int margin = 5;
+            const int marginCount = 2;
+
             var resource = Game.Instance.Players[0].Resources[(int) resourceType];
 
-            //TODO
+            if (resource.NetOperations.Count == 0)
+            {
+                return false;
+            }
+
+            this.netOperations.Definitions = resource.NetOperations.Cast<object>();
+
+            this.resourceTooltip.sizeDelta = new Vector2(this.resourceTooltip.sizeDelta.x, resource.NetOperations.Count * lineHeight + marginCount * margin);
+
+            return true;
         }
 
         private void DisplayRecipeTooltip(RecipeDefinition recipeDefinition)

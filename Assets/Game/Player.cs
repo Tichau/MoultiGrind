@@ -55,6 +55,7 @@ public class Player
         {
             this.Resources[index].AmountNeeded = new Number(0);
             this.Resources[index].AmountToDebit = new Number(0);
+            this.Resources[index].NetOperations.Clear();
         }
         
         // Compute total needed amount of resources.
@@ -86,6 +87,9 @@ public class Player
         // Cut off needs and gather remaining resources.
         for (int index = 0; index < this.Resources.Length; index++)
         {
+            this.Resources[index].Annotation("Production", this.Resources[index].NetFromPreviousTick);
+            this.Resources[index].Annotation("Consumption", new Number(-1) * this.Resources[index].AmountToDebit);
+
             // Cut off needs (inputs) from what we produce (raw output from previous tick) and from amount.
             var upkeep = Number.Min(this.Resources[index].NetFromPreviousTick, this.Resources[index].AmountToDebit);
             var stockDebit = Number.Max(this.Resources[index].AmountToDebit - this.Resources[index].NetFromPreviousTick, new Number(0));

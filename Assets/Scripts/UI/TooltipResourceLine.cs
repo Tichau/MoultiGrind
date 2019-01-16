@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,11 @@ public class TooltipResourceLine : MonoBehaviour
             {
                 this.Name.text = recipeDefinition.name;
                 this.Amount.text = string.Empty;
+            }
+            else if (value is Operation operation)
+            {
+                this.Name.text = operation.Name;
+                this.Amount.SetTextToSignedNumber(operation.Amount);
             }
         }
     }

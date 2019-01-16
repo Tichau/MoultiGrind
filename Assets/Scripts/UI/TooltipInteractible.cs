@@ -7,5 +7,5 @@ using Object = UnityEngine.Object;
 public class TooltipInteractible : MonoBehaviour
 {
     [NonSerialized]
-    public Object Data;
+    public object Data;
 }
