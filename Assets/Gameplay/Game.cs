@@ -9,10 +9,7 @@
     public class Game : MonoBehaviour
     {
         public readonly List<Player> Players = new List<Player>();
-
-        public RecipeDefinition[] RecipeDefinitions;
-        public TechnologyDefinition[] TechnologyDefinitions;
-
+        
         public float DurationBetweenTwoTicks = 1f;
         public ulong TimeElapsedPerTick = 1;
 

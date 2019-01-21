@@ -1,11 +1,10 @@
-﻿using Gameplay;
-
-namespace UI
+﻿namespace UI
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
+    using Gameplay;
 
     public class FactoryList : UIList<RecipeLine>
     {
@@ -14,7 +13,7 @@ namespace UI
         private void Update()
         {
             // Buildable factories
-            this.DisplayList(Gameplay.Game.Instance.RecipeDefinitions, this.displayPredicate, (def, ui) => ui.Definition = def);
+            this.DisplayList(Databases.Instance.RecipeDefinitions, this.displayPredicate, (def, ui) => ui.Definition = def);
         }
     }
 }

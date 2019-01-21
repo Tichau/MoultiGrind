@@ -24,7 +24,7 @@
                 this.Resources[(int) enumValue] = new Resource((ResourceType) enumValue, Number.Zero);
             }
 
-            foreach (var technology in Game.Instance.TechnologyDefinitions)
+            foreach (var technology in Databases.Instance.TechnologyDefinitions)
             {
                 this.TechnologyStatesByDefinition.Add(technology, ResearchStatus.Available);
             }

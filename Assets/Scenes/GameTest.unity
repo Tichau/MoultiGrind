@@ -2164,6 +2164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2104889152}
   - component: {fileID: 2104889151}
+  - component: {fileID: 2104889153}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -2183,18 +2184,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c0fe2637757324abb08f998f4c2261, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RecipeDefinitions:
-  - {fileID: 11400000, guid: 7dbd8e5854ca04742ac9e5c7e2f85b52, type: 2}
-  - {fileID: 11400000, guid: d8c70e9bfbce7684c9086b11b103cad3, type: 2}
-  - {fileID: 11400000, guid: 9d0d358ec4353b64fa4bf70c7ad142da, type: 2}
-  - {fileID: 11400000, guid: b7be0a414aa6ddf4abdb3e6b122e95e7, type: 2}
-  - {fileID: 11400000, guid: f7ae108783f610e4ba14d37c577e1ace, type: 2}
-  - {fileID: 11400000, guid: 7d0b368cf59be3c43bc346a029183b3b, type: 2}
-  - {fileID: 11400000, guid: 5a35f6744c6db1b43b108d9dc71d2946, type: 2}
-  - {fileID: 11400000, guid: a441a67638fde61428fae243f13e0a11, type: 2}
-  - {fileID: 11400000, guid: be545fe4bedadb1408581433f28818de, type: 2}
-  TechnologyDefinitions:
-  - {fileID: 11400000, guid: 2c39be7106ba74743b1ccaa98b08ea6c, type: 2}
   DurationBetweenTwoTicks: 1
   TimeElapsedPerTick: 1
 --- !u!4 &2104889152
@@ -2211,3 +2200,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2104889153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104889150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f818877f4dbf39047b55171a9ae29dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RecipeDefinitions:
+  - {fileID: 11400000, guid: 7dbd8e5854ca04742ac9e5c7e2f85b52, type: 2}
+  - {fileID: 11400000, guid: d8c70e9bfbce7684c9086b11b103cad3, type: 2}
+  - {fileID: 11400000, guid: 9d0d358ec4353b64fa4bf70c7ad142da, type: 2}
+  - {fileID: 11400000, guid: b7be0a414aa6ddf4abdb3e6b122e95e7, type: 2}
+  - {fileID: 11400000, guid: f7ae108783f610e4ba14d37c577e1ace, type: 2}
+  - {fileID: 11400000, guid: 7d0b368cf59be3c43bc346a029183b3b, type: 2}
+  - {fileID: 11400000, guid: 5a35f6744c6db1b43b108d9dc71d2946, type: 2}
+  - {fileID: 11400000, guid: a441a67638fde61428fae243f13e0a11, type: 2}
+  - {fileID: 11400000, guid: be545fe4bedadb1408581433f28818de, type: 2}
+  TechnologyDefinitions:
+  - {fileID: 11400000, guid: 2c39be7106ba74743b1ccaa98b08ea6c, type: 2}
