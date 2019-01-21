@@ -1,28 +1,28 @@
-﻿using System;
-using UnityEngine;
-
-[CreateAssetMenu(fileName = "Recipe", menuName = "Recipe Definition", order = 1)]
-public class RecipeDefinition : ScriptableObject
+﻿namespace Game
 {
-    [TextArea]
-    public string Description;
+    using System;
+    using UnityEngine;
 
-    public ResourceDefinition[] Inputs;
-    public ResourceDefinition[] Outputs;
+    [CreateAssetMenu(fileName = "Recipe", menuName = "Recipe Definition", order = 1)]
+    public class RecipeDefinition : ScriptableObject
+    {
+        [TextArea] public string Description;
 
-    [SerializeField]
-    private long fixedPointDuration;
+        public ResourceDefinition[] Inputs;
+        public ResourceDefinition[] Outputs;
 
-    public Number Duration => Number.FromFixedPoint(this.fixedPointDuration);
-}
+        [SerializeField] private long fixedPointDuration;
 
-[Serializable]
-public struct ResourceDefinition
-{
-    public ResourceType Name;
+        public Number Duration => Number.FromFixedPoint(this.fixedPointDuration);
+    }
 
-    [SerializeField]
-    private long fixedPointAmount;
+    [Serializable]
+    public struct ResourceDefinition
+    {
+        public ResourceType Name;
 
-    public Number Amount => Number.FromFixedPoint(this.fixedPointAmount);
+        [SerializeField] private long fixedPointAmount;
+
+        public Number Amount => Number.FromFixedPoint(this.fixedPointAmount);
+    }
 }

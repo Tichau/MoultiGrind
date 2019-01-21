@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using Game;
+
+namespace UI
 {
     using UnityEngine;
     using UnityEngine.UI;
@@ -10,7 +12,7 @@
         public Text Net;
 
         private ResourceType resourceType;
-        private global::Player activePlayer;
+        private Game.Player activePlayer;
 
         public ResourceType ResourceType
         {
@@ -33,7 +35,7 @@
             Debug.Assert(this.Amount != null);
             Debug.Assert(this.Net != null);
 
-            this.activePlayer = Game.Instance.Players[0];
+            this.activePlayer = Game.Game.Instance.Players[0];
         }
 
         private void Update()

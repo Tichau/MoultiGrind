@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using Game;
+
+namespace UI
 {
     using UnityEngine;
     using UnityEngine.UI;
@@ -27,7 +29,7 @@
 
         public void ResearchTechnology()
         {
-            Game.Instance.Players[0].ResearchTechnology(this.Definition);
+            Game.Game.Instance.Players[0].ResearchTechnology(this.Definition);
         }
         
         private void Awake()
@@ -38,7 +40,7 @@
 
         private void Update()
         {
-            this.ResearchButton.interactable = Game.Instance.Players[0].CanResearchTechnology(this.Definition);
+            this.ResearchButton.interactable = Game.Game.Instance.Players[0].CanResearchTechnology(this.Definition);
         }
     }
 }

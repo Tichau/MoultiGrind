@@ -1,25 +1,28 @@
-﻿public class Factory
+﻿namespace Game
 {
-    public RecipeDefinition Definition;
-
-    public Number Productivity;
-    public int Count;
-
-    public Factory(RecipeDefinition definition)
+    public class Factory
     {
-        this.Definition = definition;
-    }
+        public RecipeDefinition Definition;
 
-    public override string ToString()
-    {
-        string name = $"{this.Definition.name} ({this.Count})";
+        public Number Productivity;
+        public int Count;
 
-        if (this.Productivity < new Number(1))
+        public Factory(RecipeDefinition definition)
         {
-            float productivity = (float)this.Productivity;
-            return $"{name} ~ {productivity:P0}";
+            this.Definition = definition;
         }
 
-        return name;
+        public override string ToString()
+        {
+            string name = $"{this.Definition.name} ({this.Count})";
+
+            if (this.Productivity < new Number(1))
+            {
+                float productivity = (float) this.Productivity;
+                return $"{name} ~ {productivity:P0}";
+            }
+
+            return name;
+        }
     }
 }

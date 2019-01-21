@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using Game;
+
+namespace UI
 {
     using UnityEngine;
     using UnityEngine.UI;
@@ -19,7 +21,7 @@
         public Text CraftRecipeProgress;
 
         private RecipeDefinition definition;
-        private global::Player player;
+        private Game.Player player;
 
         public RecipeDefinition Definition
         {
@@ -65,7 +67,7 @@
 
         private void Start()
         {
-            this.player = Game.Instance.Players[0];
+            this.player = Game.Game.Instance.Players[0];
         }
 
         private void Update()

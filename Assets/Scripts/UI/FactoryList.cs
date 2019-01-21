@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using Game;
+
+namespace UI
 {
     using System;
     using System.Collections;
@@ -7,12 +9,12 @@
 
     public class FactoryList : UIList<RecipeLine>
     {
-        private Predicate<RecipeDefinition> displayPredicate = def => Game.Instance.Players[0].IsRecipeAvailable(def);
+        private Predicate<RecipeDefinition> displayPredicate = def => Game.Game.Instance.Players[0].IsRecipeAvailable(def);
         
         private void Update()
         {
             // Buildable factories
-            this.DisplayList(Game.Instance.RecipeDefinitions, this.displayPredicate, (def, ui) => ui.Definition = def);
+            this.DisplayList(Game.Game.Instance.RecipeDefinitions, this.displayPredicate, (def, ui) => ui.Definition = def);
         }
     }
 }

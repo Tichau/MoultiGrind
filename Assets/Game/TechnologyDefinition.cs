@@ -1,13 +1,15 @@
-﻿using System;
-using UnityEngine;
-
-[CreateAssetMenu(fileName = "Technology", menuName = "Technology Definition", order = 1)]
-public class TechnologyDefinition : ScriptableObject
+﻿namespace Game
 {
-    [TextArea]
-    public string Description;
+    using System;
+    using UnityEngine;
 
-    public ResourceDefinition[] Costs;
+    [CreateAssetMenu(fileName = "Technology", menuName = "Technology Definition", order = 1)]
+    public class TechnologyDefinition : ScriptableObject
+    {
+        [TextArea] public string Description;
 
-    public RecipeDefinition[] Unlocks;
+        public ResourceDefinition[] Costs;
+
+        public RecipeDefinition[] Unlocks;
+    }
 }

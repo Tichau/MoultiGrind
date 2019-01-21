@@ -10,7 +10,7 @@
         private void Update()
         {
             // Only display player 0 for now.
-            var player = Game.Instance.Players[0];
+            var player = Game.Game.Instance.Players[0];
             this.DisplayList(player.Resources, null, (def, ui) => ui.ResourceType = def.Name);
         }
     }

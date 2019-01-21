@@ -1,7 +1,10 @@
-﻿public enum ResearchStatus
+﻿namespace Game
 {
-    Locked,
-    Available,
-    InProgress,
-    Done
+    public enum ResearchStatus
+    {
+        Locked,
+        Available,
+        InProgress,
+        Done
+    }
 }

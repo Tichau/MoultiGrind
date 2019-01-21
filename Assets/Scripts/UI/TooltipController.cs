@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Runtime.ExceptionServices;
+using Game;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -154,7 +155,7 @@ namespace UI
             const int margin = 5;
             const int marginCount = 2;
 
-            var resource = Game.Instance.Players[0].Resources[(int) resourceType];
+            var resource = Game.Game.Instance.Players[0].Resources[(int) resourceType];
 
             if (resource.NetOperations.Count == 0)
             {

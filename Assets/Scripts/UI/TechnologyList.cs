@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using Game;
+
+namespace UI
 {
     using System;
     using System.Collections;
@@ -12,7 +14,7 @@
         private void Update()
         {
             // Display factories
-            var player = Game.Instance.Players[0];
+            var player = Game.Game.Instance.Players[0];
             this.DisplayList(player.TechnologyStatesByDefinition, this.displayPredicate, (def, ui) => ui.Definition = def.Key);
         }
     }

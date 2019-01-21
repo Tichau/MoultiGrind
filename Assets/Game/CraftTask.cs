@@ -1,18 +1,21 @@
-﻿public class CraftTask
+﻿namespace Game
 {
-    public readonly RecipeDefinition Definition;
-
-    public Number TimeSpent;
-
-    public CraftTask(RecipeDefinition definition)
+    public class CraftTask
     {
-        this.Definition = definition;
-    }
+        public readonly RecipeDefinition Definition;
 
-    public Number Progress => this.TimeSpent / this.Definition.Duration;
+        public Number TimeSpent;
 
-    public override string ToString()
-    {
-        return $"{this.Definition.name} ({(float)this.Progress:P0})";
+        public CraftTask(RecipeDefinition definition)
+        {
+            this.Definition = definition;
+        }
+
+        public Number Progress => this.TimeSpent / this.Definition.Duration;
+
+        public override string ToString()
+        {
+            return $"{this.Definition.name} ({(float) this.Progress:P0})";
+        }
     }
 }
