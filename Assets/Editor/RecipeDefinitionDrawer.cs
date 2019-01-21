@@ -1,5 +1,5 @@
 ﻿using System;
-using Game;
+using Gameplay;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;

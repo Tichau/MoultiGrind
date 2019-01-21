@@ -1,4 +1,4 @@
-﻿using Game;
+﻿using Gameplay;
 
 namespace UI
 {
@@ -12,7 +12,7 @@ namespace UI
         public Text Net;
 
         private ResourceType resourceType;
-        private Game.Player activePlayer;
+        private Gameplay.Player activePlayer;
 
         public ResourceType ResourceType
         {
@@ -35,7 +35,7 @@ namespace UI
             Debug.Assert(this.Amount != null);
             Debug.Assert(this.Net != null);
 
-            this.activePlayer = Game.Game.Instance.Players[0];
+            this.activePlayer = Gameplay.Game.Instance.Players[0];
         }
 
         private void Update()

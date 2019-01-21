@@ -1,4 +1,4 @@
-﻿using Game;
+﻿using Gameplay;
 
 namespace UI
 {
@@ -9,12 +9,12 @@ namespace UI
 
     public class FactoryList : UIList<RecipeLine>
     {
-        private Predicate<RecipeDefinition> displayPredicate = def => Game.Game.Instance.Players[0].IsRecipeAvailable(def);
+        private Predicate<RecipeDefinition> displayPredicate = def => Gameplay.Game.Instance.Players[0].IsRecipeAvailable(def);
         
         private void Update()
         {
             // Buildable factories
-            this.DisplayList(Game.Game.Instance.RecipeDefinitions, this.displayPredicate, (def, ui) => ui.Definition = def);
+            this.DisplayList(Gameplay.Game.Instance.RecipeDefinitions, this.displayPredicate, (def, ui) => ui.Definition = def);
         }
     }
 }

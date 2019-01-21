@@ -1,4 +1,4 @@
-﻿namespace Game
+﻿namespace Gameplay
 {
     using System;
     using System.Collections;

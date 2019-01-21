@@ -1,4 +1,4 @@
-﻿namespace Game
+﻿namespace Gameplay
 {
     public class Factory
     {

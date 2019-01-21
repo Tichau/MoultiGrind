@@ -1,4 +1,4 @@
-﻿using Game;
+﻿using Gameplay;
 
 namespace UI
 {
@@ -21,7 +21,7 @@ namespace UI
         public Text CraftRecipeProgress;
 
         private RecipeDefinition definition;
-        private Game.Player player;
+        private Gameplay.Player player;
 
         public RecipeDefinition Definition
         {
@@ -67,7 +67,7 @@ namespace UI
 
         private void Start()
         {
-            this.player = Game.Game.Instance.Players[0];
+            this.player = Gameplay.Game.Instance.Players[0];
         }
 
         private void Update()
