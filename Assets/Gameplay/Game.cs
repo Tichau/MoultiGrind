@@ -6,63 +6,55 @@
 
     using UnityEngine;
 
-    public class Game : MonoBehaviour
+    public class Game
     {
         public readonly List<Player> Players = new List<Player>();
         
-        public float DurationBetweenTwoTicks = 1f;
-        public ulong TimeElapsedPerTick = 1;
+        public float DurationBetweenTwoTicks;
+        public ulong TimeElapsedPerTick;
 
         private float lastTickDate = 0;
 
         private int tickIndex = 0;
 
-        public static Game Instance { get; private set; }
-
-        private void Awake()
+        public Game(float durationBetweenTwoTicks = 1f, ulong timeElapsedPerTick = 1)
         {
-            Debug.Assert(Game.Instance == null, "Instance should be null before assignation.");
-            Game.Instance = this;
-        }
+            this.DurationBetweenTwoTicks = durationBetweenTwoTicks;
+            this.TimeElapsedPerTick = timeElapsedPerTick;
 
-        private void Start()
-        {
             this.Players.Add(new Player());
         }
-
-        private void Update()
+        
+        public void Tick()
         {
-            if (Time.time - this.lastTickDate > this.DurationBetweenTwoTicks)
+            foreach (var player in this.Players)
             {
-                foreach (var player in this.Players)
-                {
-                    player.Tick(new Number(TimeElapsedPerTick));
-                }
-
-                this.lastTickDate = Time.time;
+                player.Tick(new Number(TimeElapsedPerTick));
             }
 
-#if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                this.Players[0].Resources[(int) ResourceType.AssemblingMachine1].Amount += new Number(1);
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                this.Players[0].Resources[(int) ResourceType.SciencePack1].Amount += new Number(1);
-            }
-            else if (Input.GetKeyDown(KeyCode.KeypadPlus))
-            {
-                this.TimeElapsedPerTick *= 2;
-            }
-            else if (Input.GetKeyDown(KeyCode.KeypadMinus))
-            {
-                if (this.TimeElapsedPerTick > 1)
-                {
-                    this.TimeElapsedPerTick /= 2;
-                }
-            }
-#endif
+            this.tickIndex++;
+
+//#if UNITY_EDITOR
+//            if (Input.GetKeyDown(KeyCode.A))
+//            {
+//                this.Players[0].Resources[(int) ResourceType.AssemblingMachine1].Amount += new Number(1);
+//            }
+//            else if (Input.GetKeyDown(KeyCode.S))
+//            {
+//                this.Players[0].Resources[(int) ResourceType.SciencePack1].Amount += new Number(1);
+//            }
+//            else if (Input.GetKeyDown(KeyCode.KeypadPlus))
+//            {
+//                this.TimeElapsedPerTick *= 2;
+//            }
+//            else if (Input.GetKeyDown(KeyCode.KeypadMinus))
+//            {
+//                if (this.TimeElapsedPerTick > 1)
+//                {
+//                    this.TimeElapsedPerTick /= 2;
+//                }
+//            }
+//#endif
         }
     }
 }

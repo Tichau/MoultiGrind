@@ -155,7 +155,7 @@ namespace UI
             const int margin = 5;
             const int marginCount = 2;
 
-            var resource = Gameplay.Game.Instance.Players[0].Resources[(int) resourceType];
+            var resource = GameClient.Instance.ActivePlayer.Resources[(int) resourceType];
 
             if (resource.NetOperations.Count == 0)
             {

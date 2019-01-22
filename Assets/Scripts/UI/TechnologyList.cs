@@ -14,8 +14,7 @@ namespace UI
         private void Update()
         {
             // Display factories
-            var player = Gameplay.Game.Instance.Players[0];
-            this.DisplayList(player.TechnologyStatesByDefinition, this.displayPredicate, (def, ui) => ui.Definition = def.Key);
+            this.DisplayList(GameClient.Instance.ActivePlayer.TechnologyStatesByDefinition, this.displayPredicate, (def, ui) => ui.Definition = def.Key);
         }
     }
 }

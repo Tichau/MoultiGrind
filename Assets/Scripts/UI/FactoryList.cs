@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using Assets.Scripts;
+
+namespace UI
 {
     using System;
     using System.Collections;
@@ -8,7 +10,7 @@
 
     public class FactoryList : UIList<RecipeLine>
     {
-        private Predicate<RecipeDefinition> displayPredicate = def => Gameplay.Game.Instance.Players[0].IsRecipeAvailable(def);
+        private Predicate<RecipeDefinition> displayPredicate = def => GameClient.Instance.ActivePlayer.IsRecipeAvailable(def);
         
         private void Update()
         {

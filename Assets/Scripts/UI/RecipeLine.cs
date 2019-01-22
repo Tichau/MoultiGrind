@@ -21,7 +21,6 @@ namespace UI
         public Text CraftRecipeProgress;
 
         private RecipeDefinition definition;
-        private Gameplay.Player player;
 
         public RecipeDefinition Definition
         {
@@ -40,17 +39,17 @@ namespace UI
 
         public void CraftRecipe()
         {
-            this.player.CraftRecipe(this.Definition);
+            GameClient.Instance.ActivePlayer.CraftRecipe(this.Definition);
         }
 
         public void CreateFactory()
         {
-            this.player.CreateFactory(this.Definition);
+            GameClient.Instance.ActivePlayer.CreateFactory(this.Definition);
         }
 
         public void DestroyFactory()
         {
-            this.player.DestroyFactory(this.Definition);
+            GameClient.Instance.ActivePlayer.DestroyFactory(this.Definition);
         }
 
         private void Awake()
@@ -67,16 +66,15 @@ namespace UI
 
         private void Start()
         {
-            this.player = Gameplay.Game.Instance.Players[0];
         }
 
         private void Update()
         {
-            this.CreateFactoryButton.interactable = player.CanCreateFactory(this.Definition);
-            this.DestroyFactoryButton.interactable = player.CanDestroyFactory(this.Definition);
-            this.CraftRecipeButton.interactable = player.CanCraftRecipe(this.Definition);
+            this.CreateFactoryButton.interactable = GameClient.Instance.ActivePlayer.CanCreateFactory(this.Definition);
+            this.DestroyFactoryButton.interactable = GameClient.Instance.ActivePlayer.CanDestroyFactory(this.Definition);
+            this.CraftRecipeButton.interactable = GameClient.Instance.ActivePlayer.CanCraftRecipe(this.Definition);
 
-            var factory = this.player.Factories.Find(match => match.Definition == this.definition);
+            var factory = GameClient.Instance.ActivePlayer.Factories.Find(match => match.Definition == this.definition);
             if (factory != null)
             {
                 this.FactoryCount.text = factory.Count.ToString();
@@ -88,16 +86,16 @@ namespace UI
                 this.FactoryProductivity.text = string.Empty;
             }
 
-            var craftTaskIndex = this.player.ConstructionQueue.FindIndex(match => match.Definition == definition);
+            var craftTaskIndex = GameClient.Instance.ActivePlayer.ConstructionQueue.FindIndex(match => match.Definition == definition);
             if (craftTaskIndex >= 0)
             {
                 bool isInProgress = craftTaskIndex == 0;
-                var count = this.player.ConstructionQueue.Count(match => match.Definition == definition);
+                var count = GameClient.Instance.ActivePlayer.ConstructionQueue.Count(match => match.Definition == definition);
 
                 if (isInProgress)
                 {
                     this.CraftRecipeCount.text = count > 1 ? $"{count}x" : string.Empty;
-                    this.CraftRecipeProgress.text = ((float)this.player.ConstructionQueue[craftTaskIndex].Progress).ToString("P0");
+                    this.CraftRecipeProgress.text = ((float)GameClient.Instance.ActivePlayer.ConstructionQueue[craftTaskIndex].Progress).ToString("P0");
                 }
                 else
                 {

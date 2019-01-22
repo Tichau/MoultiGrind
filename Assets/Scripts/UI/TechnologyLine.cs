@@ -29,7 +29,7 @@ namespace UI
 
         public void ResearchTechnology()
         {
-            Gameplay.Game.Instance.Players[0].ResearchTechnology(this.Definition);
+            GameClient.Instance.ActivePlayer.ResearchTechnology(this.Definition);
         }
         
         private void Awake()
@@ -40,7 +40,7 @@ namespace UI
 
         private void Update()
         {
-            this.ResearchButton.interactable = Gameplay.Game.Instance.Players[0].CanResearchTechnology(this.Definition);
+            this.ResearchButton.interactable = GameClient.Instance.ActivePlayer.CanResearchTechnology(this.Definition);
         }
     }
 }
