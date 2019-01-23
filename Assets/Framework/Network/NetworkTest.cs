@@ -1,4 +1,6 @@
-﻿namespace Network
+﻿using Framework.Network;
+
+namespace Network
 {
     using UnityEngine;
     using UnityEngine.Networking;

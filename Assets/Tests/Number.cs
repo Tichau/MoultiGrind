@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Gameplay;
+using Framework;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

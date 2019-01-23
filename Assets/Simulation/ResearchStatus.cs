@@ -1,4 +1,4 @@
-﻿namespace Gameplay
+﻿namespace Simulation
 {
     public enum ResearchStatus
     {

@@ -1,4 +1,6 @@
-﻿namespace Gameplay
+﻿using Framework;
+
+namespace Simulation
 {
     public class Factory
     {

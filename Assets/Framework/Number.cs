@@ -1,8 +1,7 @@
-﻿namespace Gameplay
+﻿namespace Framework
 {
     using System;
     using System.Numerics;
-
     using UnityEngine;
 
     [Serializable]

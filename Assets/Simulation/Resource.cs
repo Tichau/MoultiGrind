@@ -1,4 +1,6 @@
-﻿namespace Gameplay
+﻿using Framework;
+
+namespace Simulation
 {
     using System.Collections.Generic;
 

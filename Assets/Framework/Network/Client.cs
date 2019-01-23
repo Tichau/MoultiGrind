@@ -1,11 +1,11 @@
-﻿namespace Network
-{
-    using System;
-    using System.Net.Sockets;
-    using System.Text;
-    using System.Threading;
-    using UnityEngine;
+﻿using System;
+using System.Net.Sockets;
+using System.Threading;
+using Network;
+using UnityEngine;
 
+namespace Framework.Network
+{
     public class Client
     {
         private string hostname;
@@ -107,7 +107,7 @@
                     var message = Message.Parse(readBuffer);
                     Debug.Log($"[Client] Message received from server: {message}");
 
-                    if (message.Type == MessageType.Ping)
+                    if (message.Header.Type == MessageType.Ping)
                     {
                         this.SendMessage(Message.Pong());
                     }

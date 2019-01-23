@@ -23,14 +23,20 @@
         /// </summary> 	
         private Thread tcpListenerThread;
 
-        private List<Client> clients = new List<Client>();
+        private readonly List<Client> clients = new List<Client>();
 
         private bool stopped;
         private IPAddress address;
         private int port;
 
-        private byte[] writeBuffer = new Byte[1024];
         private TimeSpan clientConnectionCheckTimeout = TimeSpan.FromSeconds(30);
+        private byte nextClientId = 0;
+
+        private byte[] writeBuffer = new Byte[1024];
+
+        public event MessageReceivedDelegate MessageReceived;
+
+        public delegate void MessageReceivedDelegate(MessageHeader header, byte[] buffer);
 
         public Server() : this(IPAddress.Parse("127.0.0.1"), 8052)
         {
@@ -94,13 +100,15 @@
                     {
                         // New incoming client.
                         var newClient = this.tcpListener.AcceptTcpClient();
-                        this.clients.Add(new Client(newClient));
-                        Debug.Log($"[Server] New client connected. {this.clients.Count} client(s) now connected.");
+                        var client = new Client(this.nextClientId, newClient);
+                        this.clients.Add(client);
+                        this.nextClientId++;
+                        Debug.Log($"[Server] New client connected ({client}). {this.clients.Count} client(s) now connected.");
                     }
 
-                    for (var index = this.clients.Count - 1; index >= 0; index--)
+                    for (var clientIndex = this.clients.Count - 1; clientIndex >= 0; clientIndex--)
                     {
-                        var client = this.clients[index];
+                        var client = this.clients[clientIndex];
 
                         if (DateTime.Now - client.LastMessageTime > this.clientConnectionCheckTimeout)
                         {
@@ -111,7 +119,7 @@
                         {
                             client.Stream.Close();
                             client.TcpClient.Close();
-                            this.clients.RemoveAt(index);
+                            this.clients.RemoveAt(clientIndex);
                             Debug.Log($"[Server] Client disconnected. {this.clients.Count} client(s) remain connected.");
                             continue;
                         }
@@ -120,16 +128,18 @@
                         {
                             client.LastMessageTime = DateTime.Now;
                             client.Stream.Read(readBuffer, 0, readBuffer.Length);
-                            var message = Message.Parse(readBuffer);
-                            Debug.Log($"[Server] Message received from client {index}: {message}");
 
-                            if (message.Type == MessageType.Ping)
+                            var header = MessageHeader.Parse(readBuffer);
+                            Debug.Log($"[Server] Message received from client {client}: {header}");
+                            if (header.Type == MessageType.Ping)
                             {
                                 this.SendMessage(client, Message.Pong());
                             }
+
+                            this.MessageReceived?.Invoke(header, readBuffer);
                         }
 
-                        this.clients[index] = client;
+                        this.clients[clientIndex] = client;
                     }
 
                     Thread.Sleep(100);
@@ -144,7 +154,7 @@
                 Debug.LogError("[Server] Exception: " + exception);
             }
         }
-
+        
         public void BroadcastAll(Message message)
         {
             if (this.tcpListener == null)
@@ -181,15 +191,22 @@
 
         public struct Client
         {
+            public int Id;
             public TcpClient TcpClient;
             public NetworkStream Stream;
             public DateTime LastMessageTime;
 
-            public Client(TcpClient newClient)
+            public Client(int id, TcpClient newClient)
             {
+                this.Id = id;
                 this.TcpClient = newClient;
                 this.Stream = newClient.GetStream();
                 this.LastMessageTime = DateTime.Now;
+            }
+
+            public override string ToString()
+            {
+                return this.Id.ToString();
             }
         }
     }

@@ -6,7 +6,7 @@ namespace UI
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
-    using Gameplay;
+    using Simulation;
 
     public class FactoryList : UIList<RecipeLine>
     {

@@ -1,5 +1,7 @@
-﻿namespace Gameplay
+﻿namespace Simulation
 {
+    using Framework;
+
     public class CraftTask
     {
         public readonly RecipeDefinition Definition;

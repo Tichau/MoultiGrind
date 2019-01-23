@@ -1,4 +1,6 @@
-﻿namespace Gameplay
+﻿using Framework;
+
+namespace Simulation
 {
     using System;
     using System.Collections.Generic;
@@ -122,6 +124,11 @@
                         amountPerFactory * factory.Productivity * factory.Count;
                 }
             }
+        }
+
+        public void UnTick(Number timeElapsedPerTick)
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsRecipeAvailable(RecipeDefinition definition)
