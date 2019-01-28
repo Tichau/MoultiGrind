@@ -1,21 +1,27 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading;
-using Network;
 using UnityEngine;
 
 namespace Framework.Network
 {
-    public class Client
+    public class Client : IDisposable
     {
+        private readonly MemoryStream writeStream = new MemoryStream();
+        private readonly BinaryWriter writer;
+
         private string hostname;
         private int port;
         private bool stopped;
 
-        private TcpClient socketConnection;
+        private TcpClient tcpClient;
         private Thread clientReceiveThread;
         private NetworkStream networkStream;
-        private byte[] writeBuffer = new byte[1024];
+
+        public event MessageReceivedDelegate MessageReceived;
+
+        public delegate void MessageReceivedDelegate(MessageHeader header, BinaryReader buffer);
 
         public Client() : this("localhost", 8052)
         {
@@ -25,27 +31,8 @@ namespace Framework.Network
         {
             this.hostname = hostname;
             this.port = port;
-        }
-        
-        /// <summary> 	
-        /// Send message to client using socket connection. 	
-        /// </summary> 	
-        public void SendMessage(Message message)
-        {
-            if (this.networkStream == null || !this.networkStream.CanWrite)
-            {
-                return;
-            }
 
-            try
-            {
-                message.Write(this.writeBuffer);
-                this.networkStream.Write(this.writeBuffer, 0, this.writeBuffer.Length);
-            }
-            catch (Exception socketException)
-            {
-                Debug.Log("[Server] Socket exception: " + socketException);
-            }
+            this.writer = new BinaryWriter(this.writeStream);
         }
 
         public void Start()
@@ -70,7 +57,7 @@ namespace Framework.Network
             }
 
             this.stopped = true;
-            this.socketConnection.Close();
+            this.tcpClient.Close();
 
             while (this.clientReceiveThread.IsAlive)
             {
@@ -79,13 +66,50 @@ namespace Framework.Network
 
             this.networkStream.Close();
             this.networkStream.Dispose();
-            this.socketConnection.Dispose();
+            this.tcpClient.Dispose();
+
+            this.writeStream.Dispose();
+            this.writer.Dispose();
 
             Debug.Log("[Client] Client stopped correctly ");
+        }
 
-            this.networkStream = null;
-            this.socketConnection = null;
-            this.clientReceiveThread = null;
+        public void SendMessage(Stream message)
+        {
+            if (this.networkStream == null || !this.networkStream.CanWrite)
+            {
+                return;
+            }
+
+            try
+            {
+                message.Seek(0, SeekOrigin.Begin);
+                message.CopyTo(this.networkStream);
+            }
+            catch (Exception socketException)
+            {
+                Debug.Log("[Client] Socket exception: " + socketException);
+            }
+        }
+
+        private void SendMessage(Message message)
+        {
+            if (this.networkStream == null || !this.networkStream.CanWrite)
+            {
+                return;
+            }
+
+            try
+            {
+                this.writer.BaseStream.Seek(0, SeekOrigin.Begin);
+                this.writer.WriteMessage(message);
+                this.writer.BaseStream.Seek(0, SeekOrigin.Begin);
+                this.writeStream.CopyTo(this.networkStream);
+            }
+            catch (Exception socketException)
+            {
+                Debug.Log("[Client] Socket exception: " + socketException);
+            }
         }
 
         /// <summary>
@@ -95,28 +119,38 @@ namespace Framework.Network
         {
             try
             {
-                Byte[] readBuffer = new Byte[1024];
-
-                this.socketConnection = new TcpClient(this.hostname, this.port);
-                this.networkStream = socketConnection.GetStream();
-                Debug.Log($"[Client] Client connected to server {this.hostname} port {this.port}.");
-
-                int length;
-                while ((length = this.networkStream.Read(readBuffer, 0, readBuffer.Length)) != 0)
+                byte[] readBuffer = new byte[4096];
+                using (MemoryStream readStream = new MemoryStream(readBuffer))
+                using (BinaryReader reader = new BinaryReader(readStream))
                 {
-                    var message = Message.Parse(readBuffer);
-                    Debug.Log($"[Client] Message received from server: {message}");
+                    this.tcpClient = new TcpClient(this.hostname, this.port);
+                    this.networkStream = tcpClient.GetStream();
+                    Debug.Log($"[Client] Client connected to server {this.hostname} port {this.port}.");
 
-                    if (message.Header.Type == MessageType.Ping)
+                    while (!this.stopped)
                     {
-                        this.SendMessage(Message.Pong());
-                    }
-                }
+                        if (this.tcpClient.Available > 0)
+                        {
+                            this.networkStream.Read(readBuffer, 0, readBuffer.Length);
 
-                Debug.Log("[Client] Socket closed. Stop the client.");
-                this.Stop();
+                            readStream.Seek(0, SeekOrigin.Begin);
+                            var header = reader.ReadHeader();
+
+                            if (header.Type == MessageType.Ping)
+                            {
+                                Debug.Log($"[Client] Ping received from server.");
+                                this.SendMessage(Message.Pong);
+                            }
+
+                            this.MessageReceived?.Invoke(header, reader);
+                        }
+                    }
+
+                    Debug.Log("[Client] Socket closed. Stop the client.");
+                    this.Stop();
+                }
             }
-            catch (System.IO.IOException ioException)
+            catch (IOException ioException)
             {
                 if (this.stopped)
                 {
@@ -132,6 +166,11 @@ namespace Framework.Network
             {
                 Debug.LogError("[Client] Exception: " + exception);
             }
+        }
+
+        public void Dispose()
+        {
+            this.Stop();
         }
     }
 }
