@@ -7,6 +7,8 @@ using System.Threading;
 using Framework;
 using Framework.Network;
 using NUnit.Framework;
+using Simulation;
+using Simulation.Network;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -21,10 +23,34 @@ public class NetworkTest
 
             Assert.AreEqual(0, server.ClientCount);
 
-            using (Client client = new Client("127.0.0.1", 8052))
+            using (Client client1 = new Client("127.0.0.1", 8052))
             {
-                client.Start();
+                client1.Start();
                 Thread.Sleep(50);
+                Assert.AreEqual(1, server.ClientCount);
+                Assert.AreEqual(0, client1.Id);
+
+                using (Client client2 = new Client("127.0.0.1", 8052))
+                {
+                    client2.Start();
+                    Thread.Sleep(50);
+                    Assert.AreEqual(2, server.ClientCount);
+                    Assert.AreEqual(1, client2.Id);
+                }
+
+                Thread.Sleep(100);
+                Assert.AreEqual(1, server.ClientCount);
+
+                using (Client client2 = new Client("127.0.0.1", 8052))
+                {
+                    client2.Start();
+                    Thread.Sleep(50);
+                    Assert.AreEqual(2, server.ClientCount);
+                    Assert.AreEqual(2, client2.Id);
+
+                }
+
+                Thread.Sleep(100);
                 Assert.AreEqual(1, server.ClientCount);
 
                 Thread.Sleep(100);

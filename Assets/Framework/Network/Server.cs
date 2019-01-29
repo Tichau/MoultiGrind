@@ -10,6 +10,8 @@ namespace Framework.Network
 {
     public class Server : IDisposable
     {
+        public const byte InvalidClientId = byte.MaxValue;
+
         /// <summary> 	
         /// TCPListener to listen for incoming TCP connection 	
         /// requests. 	
@@ -70,7 +72,7 @@ namespace Framework.Network
         {
             if (this.stopped)
             {
-                Debug.LogWarning("[Client] Server already stopped.");
+                Debug.LogWarning("[Server] Server already stopped.");
                 return;
             }
 
@@ -85,7 +87,7 @@ namespace Framework.Network
             this.writeStream.Dispose();
             this.writer.Dispose();
 
-            Debug.Log("[Client] Server stopped correctly.");
+            Debug.Log("[Server] Server stopped correctly.");
         }
 
         public void SendMessage(byte clientId, Stream message)
@@ -107,6 +109,24 @@ namespace Framework.Network
             Client client = this.clients[clientIndex];
 
             if (!client.Stream.CanWrite)
+            {
+                return;
+            }
+
+            try
+            {
+                message.Seek(0, SeekOrigin.Begin);
+                message.CopyTo(client.Stream);
+            }
+            catch (Exception socketException)
+            {
+                Debug.Log("[Server] Socket exception: " + socketException);
+            }
+        }
+
+        public void SendMessage(Client client, Stream message)
+        {
+            if (this.tcpListener == null || !client.Stream.CanWrite)
             {
                 return;
             }
@@ -163,10 +183,14 @@ namespace Framework.Network
                         {
                             // New incoming client.
                             var newClient = this.tcpListener.AcceptTcpClient();
+                            Debug.Assert(this.nextClientId != InvalidClientId);
                             var client = new Client(this.nextClientId, newClient);
                             this.clients.Add(client);
                             this.nextClientId++;
                             Debug.Log($"[Server] New client connected ({client}). {this.ClientCount} client(s) now connected.");
+
+                            this.writer.WriteConnectMessage(client.Id);
+                            this.SendMessage(client, this.writeStream);
                         }
 
                         for (var clientIndex = this.clients.Count - 1; clientIndex >= 0; clientIndex--)
@@ -213,7 +237,7 @@ namespace Framework.Network
                             this.clients[clientIndex] = client;
                         }
 
-                        Thread.Sleep(10);
+                        Thread.Sleep(1);
                     }
                 }
             }

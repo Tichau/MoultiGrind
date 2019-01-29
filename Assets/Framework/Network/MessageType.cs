@@ -4,6 +4,8 @@
     {
         Invalid,
 
+        Connect,
+        Disconnect,
         Ping,
         Pong,
         Text,

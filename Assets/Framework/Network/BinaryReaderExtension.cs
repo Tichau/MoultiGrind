@@ -30,5 +30,10 @@ namespace Framework.Network
 
             return new Message(header, data);
         }
+
+        public static void ReadConnectMessage(this BinaryReader stream, out byte clientId)
+        {
+            clientId = stream.ReadByte();
+        }
     }
 }

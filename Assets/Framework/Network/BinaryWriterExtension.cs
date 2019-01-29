@@ -18,5 +18,12 @@ namespace Framework.Network
                 stream.Write(message.Data);
             }
         }
+
+        public static void WriteConnectMessage(this BinaryWriter stream, byte clientId)
+        {
+            stream.BaseStream.Position = 0;
+            stream.WriteHeader(new MessageHeader(1, MessageType.Connect));
+            stream.Write(clientId);
+        }
     }
 }

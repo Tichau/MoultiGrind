@@ -8,6 +8,8 @@ namespace Framework.Network
 {
     public class Client : IDisposable
     {
+        public byte Id = Server.InvalidClientId;
+
         private readonly MemoryStream writeStream = new MemoryStream();
         private readonly BinaryWriter writer;
 
@@ -44,7 +46,7 @@ namespace Framework.Network
             }
             catch (Exception exception)
             {
-                Debug.Log("[Client] On client connect exception " + exception);
+                Debug.Log("[{this}] On client connect exception " + exception);
             }
         }
 
@@ -52,7 +54,7 @@ namespace Framework.Network
         {
             if (this.stopped)
             {
-                Debug.LogWarning("[Client] Client already stopped.");
+                Debug.LogWarning($"[{this}] Client already stopped.");
                 return;
             }
 
@@ -71,7 +73,7 @@ namespace Framework.Network
             this.writeStream.Dispose();
             this.writer.Dispose();
 
-            Debug.Log("[Client] Client stopped correctly ");
+            Debug.Log($"[{this}] Client stopped correctly ");
         }
 
         public void SendMessage(Stream message)
@@ -88,7 +90,7 @@ namespace Framework.Network
             }
             catch (Exception socketException)
             {
-                Debug.Log("[Client] Socket exception: " + socketException);
+                Debug.Log("[{this}] Socket exception: " + socketException);
             }
         }
 
@@ -108,13 +110,10 @@ namespace Framework.Network
             }
             catch (Exception socketException)
             {
-                Debug.Log("[Client] Socket exception: " + socketException);
+                Debug.Log("[{this}] Socket exception: " + socketException);
             }
         }
 
-        /// <summary>
-        /// Listens for incomming data.
-        /// </summary>
         private void ListenForData()
         {
             try
@@ -125,28 +124,40 @@ namespace Framework.Network
                 {
                     this.tcpClient = new TcpClient(this.hostname, this.port);
                     this.networkStream = tcpClient.GetStream();
-                    Debug.Log($"[Client] Client connected to server {this.hostname} port {this.port}.");
-
+                    Debug.Log($"[{this}] Client connected to server {this.hostname} port {this.port}.");
+                    
                     while (!this.stopped)
                     {
-                        if (this.tcpClient.Available > 0)
+                        if (this.tcpClient.Available <= 0)
                         {
-                            this.networkStream.Read(readBuffer, 0, readBuffer.Length);
-
-                            readStream.Seek(0, SeekOrigin.Begin);
-                            var header = reader.ReadHeader();
-
-                            if (header.Type == MessageType.Ping)
-                            {
-                                Debug.Log($"[Client] Ping received from server.");
-                                this.SendMessage(Message.Pong);
-                            }
-
-                            this.MessageReceived?.Invoke(header, reader);
+                            Thread.Sleep(1);
+                            continue;
                         }
+
+                        this.networkStream.Read(readBuffer, 0, readBuffer.Length);
+
+                        readStream.Seek(0, SeekOrigin.Begin);
+                        var header = reader.ReadHeader();
+
+                        if (header.Type == MessageType.Ping)
+                        {
+                            Debug.Log($"[{this}] Ping received from server.");
+                            this.SendMessage(Message.Pong);
+                        }
+                        else if (header.Type == MessageType.Connect)
+                        {
+                            reader.ReadConnectMessage(out this.Id);
+                            Debug.Log($"[{this}] Client identified by server with id {this.Id}.");
+                        }
+                        else
+                        {
+                            Debug.Assert(this.Id != Server.InvalidClientId, $"[{this}] Client is not identified by server.");
+                        }
+
+                        this.MessageReceived?.Invoke(header, reader);
                     }
 
-                    Debug.Log("[Client] Socket closed. Stop the client.");
+                    Debug.Log($"[{this}] Socket closed. Stop the client.");
                     this.Stop();
                 }
             }
@@ -155,22 +166,32 @@ namespace Framework.Network
                 if (this.stopped)
                 {
                     // This exeption happen when we close the socket while trying to stop the client.
-                    Debug.Log("[Client] IO exception: " + ioException);
+                    Debug.Log($"[{this}] IO exception: " + ioException);
                 }
                 else
                 {
-                    Debug.LogError("[Client] IO exception: " + ioException);
+                    Debug.LogError($"[{this}] IO exception: " + ioException);
                 }
             }
             catch (Exception exception)
             {
-                Debug.LogError("[Client] Exception: " + exception);
+                Debug.LogError($"[{this}] Exception: " + exception);
             }
         }
 
         public void Dispose()
         {
             this.Stop();
+        }
+
+        public override string ToString()
+        {
+            if (this.Id == Server.InvalidClientId)
+            {
+                return "Client~";
+            }
+
+            return $"Client{this.Id}";
         }
     }
 }
