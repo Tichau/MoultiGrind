@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 
 namespace Framework.Network
 {
@@ -10,13 +11,13 @@ namespace Framework.Network
             stream.Write((byte)header.Type);
         }
 
-        public static void WriteMessage(this BinaryWriter stream, Message message)
+        public static void WriteTextMessage(this BinaryWriter stream, string text)
         {
-            stream.WriteHeader(message.Header);
-            if (message.Header.Size > 0)
-            {
-                stream.Write(message.Data);
-            }
+            var bytes = System.Text.Encoding.ASCII.GetBytes(text);
+            Debug.Assert(bytes.Length < ushort.MaxValue);
+            stream.BaseStream.Position = 0;
+            stream.WriteHeader(new MessageHeader((ushort)bytes.Length, MessageType.Text));
+            stream.Write(bytes);
         }
 
         public static void WriteConnectMessage(this BinaryWriter stream, byte clientId)

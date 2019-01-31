@@ -104,27 +104,7 @@ namespace Framework.Network
                 Debug.Log($"[{this}] Socket exception: " + socketException);
             }
         }
-
-        private void SendMessage(Message message)
-        {
-            if (this.networkStream == null || !this.networkStream.CanWrite)
-            {
-                return;
-            }
-
-            try
-            {
-                this.writer.BaseStream.Seek(0, SeekOrigin.Begin);
-                this.writer.WriteMessage(message);
-                this.writer.BaseStream.Seek(0, SeekOrigin.Begin);
-                this.writeStream.CopyTo(this.networkStream);
-            }
-            catch (Exception socketException)
-            {
-                Debug.Log($"[{this}] Socket exception: " + socketException);
-            }
-        }
-
+        
         private void ListenForData()
         {
             try
@@ -153,7 +133,10 @@ namespace Framework.Network
                         if (header.Type == MessageType.Ping)
                         {
                             Debug.Log($"[{this}] Ping received from server.");
-                            this.SendMessage(Message.Pong);
+
+                            this.writeStream.Position = 0;
+                            this.writer.WriteHeader(new MessageHeader(0, MessageType.Ping));
+                            this.SendMessage(this.writeStream);
                         }
                         else if (header.Type == MessageType.Connect)
                         {

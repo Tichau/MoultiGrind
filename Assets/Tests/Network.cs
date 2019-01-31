@@ -68,18 +68,18 @@ public class NetworkTest
         using (Server server = new Server(IPAddress.Parse("127.0.0.1"), 8052, TimeSpan.FromSeconds(1)))
         using (Client client = new Client("127.0.0.1", 8052))
         {
-            Message messageReceivedByServer = Message.Invalid;
+            string messageReceivedByServer = null;
             server.Start();
             server.MessageReceived += (id, header, buffer) =>
             {
-                messageReceivedByServer = buffer.ReadMessage(header);
+                buffer.ReadTextMessage(header, out messageReceivedByServer);
             };
 
-            Message messageReceivedByClient = Message.Invalid;
+            string messageReceivedByClient = null;
             client.Start();
             client.MessageReceived += (header, buffer) =>
             {
-                messageReceivedByClient = buffer.ReadMessage(header);
+                buffer.ReadTextMessage(header, out messageReceivedByClient);
             };
 
             Thread.Sleep(50);
@@ -87,23 +87,21 @@ public class NetworkTest
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                Message message = Message.Text("Client to server message.");
-                writer.WriteMessage(message);
+                writer.WriteTextMessage("Client to server message.");
 
                 client.SendMessage(stream);
                 Thread.Sleep(100);
-                Assert.AreEqual("[25B] Text: Client to server message.", messageReceivedByServer.ToString());
+                Assert.AreEqual("Client to server message.", messageReceivedByServer.ToString());
             }
 
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                Message message = Message.Text("Server to client message.");
-                writer.WriteMessage(message);
+                writer.WriteTextMessage("Server to client message.");
 
                 server.SendMessage(0, stream);
                 Thread.Sleep(100);
-                Assert.AreEqual("[25B] Text: Server to client message.", messageReceivedByClient.ToString());
+                Assert.AreEqual("Server to client message.", messageReceivedByClient.ToString());
             }
         }
     }

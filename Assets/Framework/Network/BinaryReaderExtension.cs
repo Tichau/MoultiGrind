@@ -1,7 +1,7 @@
-﻿using System.IO;
-
-namespace Framework.Network
+﻿namespace Framework.Network
 {
+    using System.IO;
+
     public static class BinaryReaderExtension
     {
         public static MessageHeader ReadHeader(this BinaryReader stream)
@@ -20,15 +20,10 @@ namespace Framework.Network
             return header;
         }
 
-        public static Message ReadMessage(this BinaryReader stream, MessageHeader header)
+        public static void ReadTextMessage(this BinaryReader stream, MessageHeader header, out string text)
         {
-            byte[] data = null;
-            if (header.Size > 0)
-            {
-                data = stream.ReadBytes(header.Size);
-            }
-
-            return new Message(header, data);
+            var bytes = stream.ReadBytes(header.Size);
+            text = System.Text.Encoding.ASCII.GetString(bytes);
         }
 
         public static void ReadConnectMessage(this BinaryReader stream, out byte clientId)

@@ -142,26 +142,6 @@ namespace Framework.Network
             }
         }
 
-        private void SendMessage(Client client, Message message)
-        {
-            if (this.tcpListener == null || !client.Stream.CanWrite)
-            {
-                return;
-            }
-
-            try
-            {
-                this.writer.BaseStream.Seek(0, SeekOrigin.Begin);
-                this.writer.WriteMessage(message);
-                this.writer.BaseStream.Seek(0, SeekOrigin.Begin);
-                this.writeStream.CopyTo(client.Stream);
-            }
-            catch (Exception socketException)
-            {
-                Debug.Log("[Server] Socket exception: " + socketException);
-            }
-        }
-
         /// <summary> 	
         /// Runs in background TcpServerThread; Handles incomming TcpClient requests 	
         /// </summary> 	
@@ -200,7 +180,9 @@ namespace Framework.Network
                             if (DateTime.Now - client.LastMessageTime > this.clientConnectionCheckTimeout)
                             {
                                 Debug.Log($"[Server] Send Ping to client {client.Id}.");
-                                this.SendMessage(client, Message.Ping);
+                                this.writeStream.Position = 0;
+                                this.writer.WriteHeader(new MessageHeader(0, MessageType.Ping));
+                                this.SendMessage(client, this.writeStream);
                             }
 
                             if (!client.TcpClient.Connected)
@@ -224,7 +206,9 @@ namespace Framework.Network
                                 if (header.Type == MessageType.Ping)
                                 {
                                     Debug.Log($"[Server] Ping received from client {client.Id}.");
-                                    this.SendMessage(client, Message.Pong);
+                                    this.writeStream.Position = 0;
+                                    this.writer.WriteHeader(new MessageHeader(0, MessageType.Pong));
+                                    this.SendMessage(client, this.writeStream);
                                 }
                                 else if (header.Type == MessageType.Pong)
                                 {
