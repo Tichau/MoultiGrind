@@ -19,13 +19,17 @@ public class NetworkTest
     {
         using (Server server = new Server(IPAddress.Parse("127.0.0.1"), 8052, TimeSpan.FromMilliseconds(100)))
         {
+            Assert.AreEqual(InterfaceState.None, server.State);
             server.Start();
+            Assert.AreEqual(InterfaceState.Started, server.State);
 
             Assert.AreEqual(0, server.ClientCount);
 
             using (Client client1 = new Client("127.0.0.1", 8052))
             {
+                Assert.AreEqual(InterfaceState.None, client1.State);
                 client1.Start();
+                Assert.AreEqual(InterfaceState.Started, client1.State);
                 Thread.Sleep(50);
                 Assert.AreEqual(1, server.ClientCount);
                 Assert.AreEqual(0, client1.Id);
@@ -54,11 +58,17 @@ public class NetworkTest
                 Assert.AreEqual(1, server.ClientCount);
 
                 Thread.Sleep(100);
+
+                client1.Stop();
+                Assert.AreEqual(InterfaceState.Stopped, client1.State);
             }
 
             // Wait for timeout after disconnection.
             Thread.Sleep(200);
             Assert.AreEqual(0, server.ClientCount);
+
+            server.Stop();
+            Assert.AreEqual(InterfaceState.Stopped, server.State);
         }
     }
 

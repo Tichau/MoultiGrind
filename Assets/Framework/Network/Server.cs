@@ -30,9 +30,10 @@ namespace Framework.Network
         private readonly MemoryStream writeStream = new MemoryStream();
         private readonly BinaryWriter writer;
 
-        private bool stopped;
         private IPAddress address;
         private int port;
+
+        private InterfaceState state;
 
         private byte nextClientId = 0;
 
@@ -54,13 +55,22 @@ namespace Framework.Network
 
         public int ClientCount => this.clients.Count;
 
+        public InterfaceState State => this.state;
+
         public void Start()
         {
+            if (this.state != InterfaceState.None)
+            {
+                Debug.LogWarning($"[Server] Server has already been started once.");
+                return;
+            }
+
             try
             {
                 // Start TcpServer background thread
                 this.tcpListenerThread = new Thread(this.ListenForData) { IsBackground = true };
                 this.tcpListenerThread.Start();
+                this.state = InterfaceState.Started;
             }
             catch (Exception exception)
             {
@@ -70,13 +80,13 @@ namespace Framework.Network
 
         public void Stop()
         {
-            if (this.stopped)
+            if (this.state != InterfaceState.Started)
             {
                 Debug.LogWarning("[Server] Server already stopped.");
                 return;
             }
 
-            this.stopped = true;
+            this.state = InterfaceState.Stopped;
             this.tcpListener.Stop();
 
             while (this.tcpListenerThread.IsAlive)
@@ -157,7 +167,7 @@ namespace Framework.Network
                     this.tcpListener.Start();
                     Debug.Log($"[Server] Server is listening on {this.address} port {this.port}.");
 
-                    while (!this.stopped)
+                    while (this.state != InterfaceState.Stopped)
                     {
                         if (this.tcpListener.Pending())
                         {
