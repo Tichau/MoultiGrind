@@ -230,8 +230,19 @@ namespace Framework.Network
                                 {
                                     Debug.Log($"[Server] Pong received from client {client.Id}.");
                                 }
+                                else
+                                {
+                                    Debug.Log($"[Server] {header.Type} received from client {client.Id}.");
+                                }
 
-                                this.MessageReceived?.Invoke(client.Id, header, reader);
+                                try
+                                {
+                                    this.MessageReceived?.Invoke(client.Id, header, reader);
+                                }
+                                catch (Exception exception)
+                                {
+                                    Debug.LogError($"[Server] Exception thrown on message received callback.\n{exception}");
+                                }
                             }
 
                             this.clients[clientIndex] = client;

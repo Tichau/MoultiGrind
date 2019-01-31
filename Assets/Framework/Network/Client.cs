@@ -10,12 +10,13 @@ namespace Framework.Network
     {
         public byte Id = Server.InvalidClientId;
 
-        private readonly MemoryStream writeStream = new MemoryStream();
-        private readonly BinaryWriter writer;
+        private readonly string hostname;
+        private readonly int port;
 
-        private string hostname;
-        private int port;
-        private bool stopped;
+        private InterfaceState state;
+
+        private MemoryStream writeStream;
+        private BinaryWriter writer;
 
         private TcpClient tcpClient;
         private Thread clientReceiveThread;
@@ -33,16 +34,25 @@ namespace Framework.Network
         {
             this.hostname = hostname;
             this.port = port;
-
-            this.writer = new BinaryWriter(this.writeStream);
         }
+
+        public InterfaceState State => this.state;
 
         public void Start()
         {
+            if (this.state != InterfaceState.None)
+            {
+                Debug.LogWarning($"[{this}] Client has already been started once.");
+                return;
+            }
+
             try
             {
+                this.writeStream = new MemoryStream();
+                this.writer = new BinaryWriter(this.writeStream);
                 this.clientReceiveThread = new Thread(this.ListenForData) { IsBackground = true };
                 this.clientReceiveThread.Start();
+                this.state = InterfaceState.Started;
             }
             catch (Exception exception)
             {
@@ -52,13 +62,13 @@ namespace Framework.Network
 
         public void Stop()
         {
-            if (this.stopped)
+            if (this.state != InterfaceState.Started)
             {
                 Debug.LogWarning($"[{this}] Client already stopped.");
                 return;
             }
 
-            this.stopped = true;
+            this.state = InterfaceState.Stopped;
             this.tcpClient.Close();
 
             while (this.clientReceiveThread.IsAlive)
@@ -85,12 +95,13 @@ namespace Framework.Network
 
             try
             {
+                Debug.Log($"[{this}] send message.");
                 message.Seek(0, SeekOrigin.Begin);
                 message.CopyTo(this.networkStream);
             }
             catch (Exception socketException)
             {
-                Debug.Log("[{this}] Socket exception: " + socketException);
+                Debug.Log($"[{this}] Socket exception: " + socketException);
             }
         }
 
@@ -110,7 +121,7 @@ namespace Framework.Network
             }
             catch (Exception socketException)
             {
-                Debug.Log("[{this}] Socket exception: " + socketException);
+                Debug.Log($"[{this}] Socket exception: " + socketException);
             }
         }
 
@@ -126,7 +137,7 @@ namespace Framework.Network
                     this.networkStream = tcpClient.GetStream();
                     Debug.Log($"[{this}] Client connected to server {this.hostname} port {this.port}.");
                     
-                    while (!this.stopped)
+                    while (this.state != InterfaceState.Stopped)
                     {
                         if (this.tcpClient.Available <= 0)
                         {
@@ -154,7 +165,14 @@ namespace Framework.Network
                             Debug.Assert(this.Id != Server.InvalidClientId, $"[{this}] Client is not identified by server.");
                         }
 
-                        this.MessageReceived?.Invoke(header, reader);
+                        try
+                        {
+                            this.MessageReceived?.Invoke(header, reader);
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.LogError($"[{this}] Exception thrown on message received callback.\n{exception}");
+                        }
                     }
 
                     Debug.Log($"[{this}] Socket closed. Stop the client.");
@@ -163,9 +181,9 @@ namespace Framework.Network
             }
             catch (IOException ioException)
             {
-                if (this.stopped)
+                if (this.state == InterfaceState.Stopped)
                 {
-                    // This exeption happen when we close the socket while trying to stop the client.
+                    // This exception happen when we close the socket while trying to stop the client.
                     Debug.Log($"[{this}] IO exception: " + ioException);
                 }
                 else

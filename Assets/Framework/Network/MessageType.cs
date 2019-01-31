@@ -9,6 +9,9 @@
         Ping,
         Pong,
         Text,
-        Binary,
+
+        CreateGame,
+        JoinGame,
+        GameOrder,
     }
 }
