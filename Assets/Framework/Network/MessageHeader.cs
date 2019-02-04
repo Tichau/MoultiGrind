@@ -2,6 +2,8 @@
 {
     public struct MessageHeader
     {
+        public const int SizeOf = 3;
+
         public static readonly MessageHeader Invalid = new MessageHeader();
 
         public ushort Size;

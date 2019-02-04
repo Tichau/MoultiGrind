@@ -10,8 +10,6 @@
         Pong,
         Text,
 
-        CreateGame,
-        JoinGame,
         GameOrder,
     }
 }
