@@ -166,8 +166,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1569578511}
   - component: {fileID: 1569578512}
+  - component: {fileID: 1569578513}
   m_Layer: 0
-  m_Name: Databases
+  m_Name: Managers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -211,3 +212,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: be545fe4bedadb1408581433f28818de, type: 2}
   TechnologyDefinitions:
   - {fileID: 11400000, guid: 2c39be7106ba74743b1ccaa98b08ea6c, type: 2}
+--- !u!114 &1569578513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569578510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08b40edb22af46a49bf438c1fed27802, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
