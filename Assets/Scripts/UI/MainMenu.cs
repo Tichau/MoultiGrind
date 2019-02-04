@@ -1,18 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class MainMenu : MonoBehaviour
+﻿namespace UI
 {
-    public void NewGame()
-    {
-    }
+    using UnityEngine;
 
-    public void JoinGame()
+    public class MainMenu : MonoBehaviour
     {
-    }
+        public void NewGame()
+        {
+        }
 
-    public void LoadGame()
-    {
+        public void JoinGame()
+        {
+        }
+
+        public void LoadGame()
+        {
+        }
     }
 }

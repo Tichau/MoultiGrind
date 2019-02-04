@@ -17,7 +17,7 @@
             var gameInstance = new GameInstance(header.GameInstanceId, this.durationBetweenTwoTicks, timeElapsedPerTick);
             this.hostedGames.Add(gameInstance);
 
-            Debug.Log($"Game {header.GameInstanceId}.");
+            Debug.Log($"[GameServer] Create game {header.GameInstanceId}.");
 
             header.Write(dataToClient);
             dataToClient.WriteCreateGameOrder(timeElapsedPerTick);

@@ -1,4 +1,5 @@
 ﻿using Simulation;
+using Simulation.Network;
 
 namespace UI
 {

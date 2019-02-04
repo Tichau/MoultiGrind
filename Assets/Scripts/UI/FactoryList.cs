@@ -1,4 +1,4 @@
-﻿using Assets.Scripts;
+﻿using Simulation.Network;
 
 namespace UI
 {

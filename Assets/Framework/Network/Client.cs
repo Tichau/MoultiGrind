@@ -95,7 +95,6 @@ namespace Framework.Network
 
             try
             {
-                Debug.Log($"[{this}] send message.");
                 message.Seek(0, SeekOrigin.Begin);
                 message.CopyTo(this.networkStream);
             }

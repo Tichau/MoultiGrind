@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.ExceptionServices;
 using Simulation;
+using Simulation.Network;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 

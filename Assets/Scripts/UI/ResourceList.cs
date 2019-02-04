@@ -1,4 +1,6 @@
-﻿namespace UI
+﻿using Simulation.Network;
+
+namespace UI
 {
     public class ResourceList : UIList<ResourceLine>
     {
