@@ -1,4 +1,5 @@
-﻿using Framework;
+﻿using System.IO;
+using Framework;
 
 namespace Simulation
 {
@@ -10,14 +11,15 @@ namespace Simulation
 
     public class Player
     {
+        public readonly byte ClientId;
+
         public Resource[] Resources;
         public List<Factory> Factories = new List<Factory>();
         public List<CraftTask> ConstructionQueue = new List<CraftTask>();
 
-        public Dictionary<TechnologyDefinition, ResearchStatus> TechnologyStatesByDefinition =
-            new Dictionary<TechnologyDefinition, ResearchStatus>();
+        public Dictionary<TechnologyDefinition, ResearchStatus> TechnologyStatesByDefinition = new Dictionary<TechnologyDefinition, ResearchStatus>();
 
-        public Player()
+        public Player(byte clientId)
         {
             Array enumValues = typeof(ResourceType).GetEnumValues();
             this.Resources = new Resource[enumValues.Length];
@@ -30,6 +32,10 @@ namespace Simulation
             {
                 this.TechnologyStatesByDefinition.Add(technology, ResearchStatus.Available);
             }
+        }
+
+        internal Player() : this(255)
+        {
         }
 
         public void Tick(Number timeElapsed)
@@ -249,6 +255,14 @@ namespace Simulation
             }
 
             this.TechnologyStatesByDefinition[definition] = ResearchStatus.Done;
+        }
+
+        public void Serialize(BinaryWriter stream)
+        {
+        }
+
+        public void Deserialize(BinaryReader stream)
+        {
         }
     }
 }

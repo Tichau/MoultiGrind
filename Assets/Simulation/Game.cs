@@ -1,25 +1,26 @@
-﻿using Framework;
+﻿using System.IO;
+using Framework;
 
 namespace Simulation
 {
-    using System.Collections.Generic;
-
     public class Game
     {
-        public readonly List<Player> Players = new List<Player>();
         public readonly Number TimeElapsedPerTick;
+        public Player[] Players;
 
         public int TickIndex = 0;
 
         public Game(ulong timeElapsedPerTick = 1)
         {
+            this.Players = new Player[0];
             this.TimeElapsedPerTick = new Number(timeElapsedPerTick);
         }
 
-        public uint RegisterPlayer()
+        public byte RegisterPlayer(byte clientId)
         {
-            uint playerId = (uint)this.Players.Count;
-            this.Players.Add(new Player());
+            byte playerId = (byte)this.Players.Length;
+            System.Array.Resize(ref this.Players, this.Players.Length + 1);
+            this.Players[playerId] = new Player(clientId);
             return playerId;
         }
         
@@ -40,6 +41,28 @@ namespace Simulation
             foreach (var player in this.Players)
             {
                 player.UnTick(this.TimeElapsedPerTick);
+            }
+        }
+
+        public void Serialize(BinaryWriter stream)
+        {
+            stream.Write(this.TickIndex);
+            stream.Write((byte)this.Players.Length);
+            for (int index = 0; index < this.Players.Length; index++)
+            {
+                this.Players[index].Serialize(stream);
+            }
+        }
+
+        public void Deserialize(BinaryReader stream)
+        {
+            this.TickIndex = stream.ReadInt32();
+            var playerCount = stream.ReadByte();
+            this.Players = new Player[playerCount];
+            for (int index = 0; index < this.Players.Length; index++)
+            {
+                this.Players[index] = new Player();
+                this.Players[index].Deserialize(stream);
             }
         }
     }

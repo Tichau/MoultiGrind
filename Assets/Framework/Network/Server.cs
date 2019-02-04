@@ -224,10 +224,6 @@ namespace Framework.Network
                                 {
                                     Debug.Log($"[Server] Pong received from client {client.Id}.");
                                 }
-                                else
-                                {
-                                    Debug.Log($"[Server] {header.Type} received from client {client.Id}.");
-                                }
 
                                 try
                                 {
