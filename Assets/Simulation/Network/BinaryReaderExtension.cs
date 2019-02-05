@@ -30,10 +30,5 @@ namespace Simulation.Network
             game = new Game();
             game.Deserialize(stream);
         }
-
-        public static void ReadCraftRecipeOrder(this BinaryReader stream, out uint recipeId)
-        {
-            recipeId = stream.ReadUInt32();
-        }
     }
 }

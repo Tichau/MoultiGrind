@@ -9,19 +9,6 @@
 
     public partial class Player
     {
-        public async Task PostCraftRecipeOrder(RecipeDefinition definition)
-        {
-            var header = GameClient.Instance.WriteOrderHeader(OrderType.CraftRecipe);
-            GameClient.Instance.Writer.WriteCraftRecipeOrder(definition.Id);
-
-            header = await GameClient.Instance.PostOrder(header);
-
-            if (header.Status != OrderStatus.Executed)
-            {
-                throw new System.Exception("Craft recipe order failed.");
-            }
-        }
-
         public bool CanCraftRecipe(RecipeDefinition definition)
         {
             bool resourcePrerequisites = true;
@@ -31,6 +18,29 @@
             }
 
             return resourcePrerequisites;
+        }
+
+        public async Task PostCraftRecipeOrder(RecipeDefinition definition)
+        {
+            var header = GameClient.Instance.WriteOrderHeader(OrderType.CraftRecipe);
+            WriteCraftRecipeOrder(GameClient.Instance.Writer, definition.Id);
+
+            header = await GameClient.Instance.PostOrder(header);
+
+            if (header.Status != OrderStatus.Executed)
+            {
+                throw new System.Exception("Craft recipe order failed.");
+            }
+        }
+
+        private static void WriteCraftRecipeOrder(BinaryWriter stream, uint recipeId)
+        {
+            stream.Write(recipeId);
+        }
+
+        private static void ReadCraftRecipeOrder(BinaryReader stream, out uint recipeId)
+        {
+            recipeId = stream.ReadUInt32();
         }
 
         private void ApplyCraftRecipeOrder(RecipeDefinition definition)
@@ -46,7 +56,7 @@
         [OrderServerPass(OrderType.CraftRecipe)]
         private OrderStatus CraftRecipeServerPass(OrderHeader header, BinaryReader dataFromClient, BinaryWriter dataToClient)
         {
-            dataFromClient.ReadCraftRecipeOrder(out var recipeId);
+            ReadCraftRecipeOrder(dataFromClient, out var recipeId);
 
             RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
            
@@ -58,7 +68,7 @@
             this.ApplyCraftRecipeOrder(definition);
             
             header.Write(dataToClient);
-            dataToClient.WriteCraftRecipeOrder(recipeId);
+            WriteCraftRecipeOrder(dataToClient, recipeId);
 
             return OrderStatus.Validated;
         }
@@ -66,7 +76,7 @@
         [OrderClientPass(OrderType.CraftRecipe)]
         private void CraftRecipeClientPass(OrderHeader header, BinaryReader dataFromServer)
         {
-            dataFromServer.ReadCraftRecipeOrder(out var recipeId);
+            ReadCraftRecipeOrder(dataFromServer, out var recipeId);
 
             RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
 
