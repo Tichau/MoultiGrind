@@ -64,8 +64,22 @@ namespace Simulation.Network
                         Debug.LogWarning("Invalid order.");
                         return;
                     }
-
+                    
+                    // Get order data.
                     var orderData = this.OrderById[(int) orderHeader.Type];
+                    if (orderData.Context == OrderContext.Invalid)
+                    {
+                        var game = this.hostedGames[orderHeader.GameInstanceId];
+                        if (!game.Game.TryGetPlayer(orderHeader.ClientId, out Player player))
+                        {
+                            Debug.LogWarning("Invalid order.");
+                            return;
+                        }
+
+                        orderData = player.OrderById[(int) orderHeader.Type];
+                    }
+
+                    Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");
                     Debug.Assert(orderData.ServerPass != null, $"No server pass for order {orderData.Type}.");
 
                     this.WriteBuffer.Position = 0;

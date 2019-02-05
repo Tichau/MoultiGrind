@@ -1,12 +1,12 @@
-﻿using Simulation;
-using Simulation.Network;
-
-namespace UI
+﻿namespace UI
 {
     using UnityEngine;
     using UnityEngine.UI;
 
     using System.Linq;
+
+    using Simulation;
+    using Simulation.Network;
 
     public class RecipeLine : MonoBehaviour
     {
@@ -40,7 +40,7 @@ namespace UI
 
         public void CraftRecipe()
         {
-            GameClient.Instance.ActivePlayer.CraftRecipe(this.Definition);
+            GameClient.Instance.ActivePlayer.PostCraftRecipeOrder(this.Definition);
         }
 
         public void CreateFactory()

@@ -1,10 +1,10 @@
-﻿using Simulation;
-using Simulation.Network;
-
-namespace UI
+﻿namespace UI
 {
     using UnityEngine;
     using UnityEngine.UI;
+
+    using Simulation;
+    using Simulation.Network;
 
     public class ResourceLine : MonoBehaviour
     {

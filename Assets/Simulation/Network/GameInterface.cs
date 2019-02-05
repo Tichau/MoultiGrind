@@ -8,7 +8,7 @@ namespace Simulation.Network
     public abstract class GameInterface : IDisposable
     {
         protected MemoryStream WriteBuffer = new MemoryStream();
-        protected BinaryWriter Writer;
+        internal BinaryWriter Writer;
 
         protected OrderData[] OrderById;
 
@@ -37,6 +37,7 @@ namespace Simulation.Network
 
         private void GenerateOrderData()
         {
+            // Initialize order types array.
             var values = Enum.GetValues(typeof(OrderType));
             this.OrderById = new OrderData[values.Length];
             for (int index = 0; index < values.Length; index++)
@@ -46,7 +47,8 @@ namespace Simulation.Network
                     Type = (OrderType) index,
                 };
             }
-
+            
+            // Search passes on game interface.
             MethodInfo[] methodInfos = this.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
             for (int index = 0; index < methodInfos.Length; index++)
             {

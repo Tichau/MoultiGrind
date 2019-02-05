@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Framework;
 
 namespace Simulation
@@ -64,6 +65,21 @@ namespace Simulation
                 this.Players[index] = new Player();
                 this.Players[index].Deserialize(stream);
             }
+        }
+
+        public bool TryGetPlayer(byte clientId, out Player player)
+        {
+            for (int index = 0; index < this.Players.Length; index++)
+            {
+                if (this.Players[index].ClientId == clientId)
+                {
+                    player = this.Players[index];
+                    return true;
+                }
+            }
+
+            player = null;
+            return false;
         }
     }
 }

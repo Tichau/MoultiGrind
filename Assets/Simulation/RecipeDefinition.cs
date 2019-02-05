@@ -6,7 +6,7 @@ namespace Simulation
     using UnityEngine;
 
     [CreateAssetMenu(fileName = "Recipe", menuName = "Recipe Definition", order = 1)]
-    public class RecipeDefinition : ScriptableObject
+    public class RecipeDefinition : ScriptableObject, IDatabaseElement
     {
         [TextArea] public string Description;
 
@@ -16,6 +16,8 @@ namespace Simulation
         [SerializeField] private long fixedPointDuration;
 
         public Number Duration => Number.FromFixedPoint(this.fixedPointDuration);
+
+        public uint Id { get; internal set; }
     }
 
     [Serializable]

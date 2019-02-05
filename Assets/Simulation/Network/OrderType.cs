@@ -6,5 +6,7 @@
 
         CreateGame,
         JoinGame,
+
+        CraftRecipe,
     }
 }

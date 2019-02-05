@@ -93,9 +93,22 @@ namespace Simulation.Network
 
                     if (orderHeader.Status == OrderStatus.Validated)
                     {
+                        // Get order data.
                         var orderData = this.OrderById[(int)orderHeader.Type];
-                        Debug.Assert(orderData.ClientPass != null, $"No server pass for order {orderData.Type}.");
+                        if (orderData.Context == OrderContext.Invalid)
+                        {
+                            if (this.Game == null || !this.Game.TryGetPlayer(orderHeader.ClientId, out Player player))
+                            {
+                                Debug.LogWarning("Invalid order.");
+                                return;
+                            }
 
+                            orderData = player.OrderById[(int)orderHeader.Type];
+                        }
+
+                        Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");
+                        Debug.Assert(orderData.ClientPass != null, $"No client pass for order {orderData.Type}.");
+                        
                         orderData.ClientPass.Invoke(orderHeader, buffer);
                         orderHeader.Status = OrderStatus.Executed;
                     }
@@ -108,7 +121,7 @@ namespace Simulation.Network
             }
         }
 
-        private OrderHeader WriteOrderHeader(OrderType type)
+        internal OrderHeader WriteOrderHeader(OrderType type)
         {
             this.WriteBuffer.Position = 0;
             var id = this.nextOrderId++;
@@ -117,7 +130,7 @@ namespace Simulation.Network
             return header;
         }
 
-        private OrderHeader WriteOrderHeader(OrderType type, byte gameInstanceId)
+        internal OrderHeader WriteOrderHeader(OrderType type, byte gameInstanceId)
         {
             this.WriteBuffer.Position = 0;
             var id = this.nextOrderId++;
@@ -160,7 +173,7 @@ namespace Simulation.Network
             this.client.SendMessage(this.WriteBuffer);
         }
 
-        private async System.Threading.Tasks.Task<OrderHeader> PostOrder(OrderHeader header)
+        internal async System.Threading.Tasks.Task<OrderHeader> PostOrder(OrderHeader header)
         {
             this.SendOrderFromWriteBuffer(header);
             return await this.ForOrderResponse(header.Id);

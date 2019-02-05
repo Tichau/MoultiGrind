@@ -1,5 +1,8 @@
 ﻿using System.IO;
+using System.Reflection;
 using Framework;
+using Simulation.Network;
+using UnityEngine;
 
 namespace Simulation
 {
@@ -9,18 +12,23 @@ namespace Simulation
     using System.Threading.Tasks;
     using UnityEditor;
 
-    public class Player
+    public partial class Player
     {
-        public readonly byte ClientId;
-
         public Resource[] Resources;
         public List<Factory> Factories = new List<Factory>();
         public List<CraftTask> ConstructionQueue = new List<CraftTask>();
 
         public Dictionary<TechnologyDefinition, ResearchStatus> TechnologyStatesByDefinition = new Dictionary<TechnologyDefinition, ResearchStatus>();
 
-        public Player(byte clientId)
+        internal byte ClientId;
+        internal OrderData[] OrderById;
+
+        internal Player(byte clientId)
         {
+            this.GenerateOrderData();
+
+            this.ClientId = clientId;
+
             Array enumValues = typeof(ResourceType).GetEnumValues();
             this.Resources = new Resource[enumValues.Length];
             foreach (var enumValue in enumValues)
@@ -199,33 +207,7 @@ namespace Simulation
             var factory = this.Factories.Find(match => match.Definition == definition);
             factory.Count--;
         }
-
-        public bool CanCraftRecipe(RecipeDefinition definition)
-        {
-            bool resourcePrerequisites = true;
-            foreach (var resource in definition.Inputs)
-            {
-                resourcePrerequisites &= resource.Amount <= this.Resources[(int) resource.Name].Amount;
-            }
-
-            return resourcePrerequisites;
-        }
-
-        public void CraftRecipe(RecipeDefinition definition)
-        {
-            if (!this.CanCraftRecipe(definition))
-            {
-                return;
-            }
-
-            foreach (var resource in definition.Inputs)
-            {
-                this.Resources[(int) resource.Name].Amount -= resource.Amount;
-            }
-
-            this.ConstructionQueue.Add(new CraftTask(definition));
-        }
-
+        
         public bool CanResearchTechnology(TechnologyDefinition definition)
         {
             if (this.TechnologyStatesByDefinition[definition] != ResearchStatus.Available)
@@ -259,10 +241,56 @@ namespace Simulation
 
         public void Serialize(BinaryWriter stream)
         {
+            stream.Write(this.ClientId);
         }
 
         public void Deserialize(BinaryReader stream)
         {
+            this.ClientId = stream.ReadByte();
+        }
+
+        private void GenerateOrderData()
+        {
+            // Initialize order types array.
+            var values = Enum.GetValues(typeof(OrderType));
+            this.OrderById = new OrderData[values.Length];
+            for (int index = 0; index < values.Length; index++)
+            {
+                this.OrderById[index] = new OrderData()
+                {
+                    Type = (OrderType)index,
+                };
+            }
+
+            // Search passes on game interface.
+            MethodInfo[] methodInfos = typeof(Player).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            for (int index = 0; index < methodInfos.Length; index++)
+            {
+                try
+                {
+                    var serverPass = methodInfos[index].GetCustomAttribute<OrderServerPassAttribute>();
+                    if (serverPass != null)
+                    {
+                        Debug.Assert(this.OrderById[(int)serverPass.OrderType].ServerPass == null);
+                        this.OrderById[(int)serverPass.OrderType].Context = OrderContext.Player;
+                        this.OrderById[(int)serverPass.OrderType].ServerPass = (OrderData.ServerPassDelegate)methodInfos[index].CreateDelegate(typeof(OrderData.ServerPassDelegate), this);
+                        Debug.Assert(this.OrderById[(int)serverPass.OrderType].ServerPass != null);
+                    }
+
+                    var clientPass = methodInfos[index].GetCustomAttribute<OrderClientPassAttribute>();
+                    if (clientPass != null)
+                    {
+                        Debug.Assert(this.OrderById[(int)clientPass.OrderType].ClientPass == null);
+                        this.OrderById[(int)clientPass.OrderType].Context = OrderContext.Player;
+                        this.OrderById[(int)clientPass.OrderType].ClientPass = (OrderData.ClientPassDelegate)methodInfos[index].CreateDelegate(typeof(OrderData.ClientPassDelegate), this);
+                        Debug.Assert(this.OrderById[(int)clientPass.OrderType].ClientPass != null);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogError($"Invalid order pass: {methodInfos[index].Name}.\n{exception}");
+                }
+            }
         }
     }
 }

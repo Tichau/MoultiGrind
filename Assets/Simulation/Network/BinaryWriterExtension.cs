@@ -29,5 +29,10 @@ namespace Simulation.Network
 
             game.Serialize(stream);
         }
+
+        public static void WriteCraftRecipeOrder(this BinaryWriter stream, uint recipeId)
+        {
+            stream.Write(recipeId);
+        }
     }
 }
