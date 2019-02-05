@@ -71,7 +71,8 @@ namespace Simulation.Network
                 return;
             }
 
-            if (Time.time - this.lastTickDate > this.durationBetweenTwoTicks)
+            long timeElapsedSinceLastTick = Mathf.FloorToInt((Time.time - this.lastTickDate) * 1000);
+            if (timeElapsedSinceLastTick > (long)this.durationBetweenTwoTicks)
             {
                 this.Game.Tick();
 
