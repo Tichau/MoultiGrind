@@ -20,6 +20,9 @@
 
             Debug.Log($"[GameServer] Game {header.GameInstanceId} created.");
 
+            // Specific case: For this order we modify a data stored in the header. 
+            // TODO: Handle this in a better way.
+            dataToClient.BaseStream.Position = 0;
             header.Write(dataToClient);
             dataToClient.WriteCreateGameOrder(timeElapsedPerTick);
 
@@ -39,8 +42,6 @@
                     game = this.hostedGames[index];
                 }
             }
-
-            header.Write(dataToClient);
 
             if (game == null)
             {

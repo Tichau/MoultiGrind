@@ -5,6 +5,7 @@ namespace Simulation.Network
 {
     public struct OrderHeader
     {
+        public const int SizeOf = MessageHeader.SizeOf + 8;
         public const int StatusPosition = MessageHeader.SizeOf + 5;
 
         public static readonly OrderHeader Invalid = new OrderHeader();

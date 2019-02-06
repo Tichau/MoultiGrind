@@ -139,8 +139,7 @@ namespace Simulation.Network
             header.Write(this.Writer);
             return header;
         }
-
-
+        
         private async System.Threading.Tasks.Task<OrderHeader> ForOrderResponse(uint orderId)
         {
             while (this.orders[orderId].Status != OrderStatus.Executed &&
@@ -152,16 +151,12 @@ namespace Simulation.Network
             OrderHeader header = this.orders[orderId];
             switch (header.Status)
             {
-                case OrderStatus.None:
-                case OrderStatus.Validated:
-                    throw new System.Exception("Invalid order status.");
-
                 case OrderStatus.Refused:
                 case OrderStatus.Executed:
                     break;
 
                 default:
-                    throw new System.Exception($"Unknown order status {header.Status}");
+                    throw new System.Exception($"Invalid order status {header.Status}");
             }
 
             this.orders.Remove(header.Id);

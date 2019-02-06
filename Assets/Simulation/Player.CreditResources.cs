@@ -62,7 +62,6 @@ namespace Simulation
 
             this.ApplyCreditResourcesOrder(resource, amount);
             
-            header.Write(dataToClient);
             WriteCreditResourcesOrder(dataToClient, resource, amount);
 
             return OrderStatus.Validated;

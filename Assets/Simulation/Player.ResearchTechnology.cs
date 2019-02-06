@@ -77,7 +77,6 @@
 
             this.ApplyResearchTechnologyOrder(definition);
             
-            header.Write(dataToClient);
             WriteResearchTechnologyOrder(dataToClient, recipeId);
 
             return OrderStatus.Validated;

@@ -72,7 +72,6 @@ namespace Simulation
 
             this.ApplyCreateFactoryOrder(definition);
             
-            header.Write(dataToClient);
             WriteCreateFactoryOrder(dataToClient, recipeId);
 
             return OrderStatus.Validated;

@@ -67,7 +67,6 @@
 
             this.ApplyCraftRecipeOrder(definition);
             
-            header.Write(dataToClient);
             WriteCraftRecipeOrder(dataToClient, recipeId);
 
             return OrderStatus.Validated;

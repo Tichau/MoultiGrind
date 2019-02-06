@@ -60,7 +60,6 @@
 
             this.ApplyDestroyFactoryOrder(definition);
             
-            header.Write(dataToClient);
             WriteDestroyFactoryOrder(dataToClient, recipeId);
 
             return OrderStatus.Validated;
