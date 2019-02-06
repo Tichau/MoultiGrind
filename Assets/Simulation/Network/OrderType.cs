@@ -11,5 +11,8 @@
         CreateFactory,
         DestroyFactory,
         ResearchTechnology,
+
+        // Cheat
+        CreditResources,
     }
 }

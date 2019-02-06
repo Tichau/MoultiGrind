@@ -35,11 +35,11 @@ public class TestGameManager : MonoBehaviour
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.A))
         {
-            //this.Players[0].Resources[(int)ResourceType.AssemblingMachine1].Amount += new Number(1);
+            GameClient.Instance.ActivePlayer.PostCreditResourcesOrder(ResourceType.AssemblingMachine1, 1);
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            //this.Players[0].Resources[(int)ResourceType.SciencePack1].Amount += new Number(1);
+            GameClient.Instance.ActivePlayer.PostCreditResourcesOrder(ResourceType.SciencePack1, 1);
         }
         else if (Input.GetKeyDown(KeyCode.KeypadPlus))
         {
