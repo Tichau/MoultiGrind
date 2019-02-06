@@ -37,7 +37,11 @@ namespace Simulation.Network
 
         public override void Stop()
         {
-            // TODO: Shutdown hosted games.
+            // Shutdown hosted games.
+            for (int index = 0; index < this.hostedGames.Count; index++)
+            {
+                this.hostedGames[index].Stop();
+            }
 
             this.server.MessageReceived -= this.OnMessageReceived;
             this.server.Stop();

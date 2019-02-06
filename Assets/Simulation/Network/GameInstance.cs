@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using UnityEngine;
 
 namespace Simulation
@@ -11,7 +12,6 @@ namespace Simulation
 
         private readonly Thread gameThread;
 
-        private float tickTime;
         private bool exit;
 
         /// <summary>
@@ -41,6 +41,8 @@ namespace Simulation
             {
                 Thread.Sleep(10);
             }
+
+            Debug.Log($"Game {this.Id} stopped correctly.");
         }
 
         public byte Join(byte clientId)
@@ -52,7 +54,6 @@ namespace Simulation
         {
             while (!this.exit)
             {
-                this.tickTime = Time.time;
                 this.Game.Tick();
 
                 Thread.Sleep(this.DurationBetweenTwoTicks);
