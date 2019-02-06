@@ -1,10 +1,11 @@
 ﻿namespace UI
 {
-    using UnityEngine;
-    using UnityEngine.UI;
-
+    using System;
     using System.Linq;
 
+    using UnityEngine;
+    using UnityEngine.UI;
+    
     using Simulation;
     using Simulation.Network;
 
@@ -38,19 +39,40 @@
             }
         }
 
-        public void CraftRecipe()
+        public async void CraftRecipe()
         {
-            GameClient.Instance.ActivePlayer.PostCraftRecipeOrder(this.Definition);
+            try
+            {
+                await GameClient.Instance.ActivePlayer.PostCraftRecipeOrder(this.Definition);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning(exception.Message);
+            }
         }
 
-        public void CreateFactory()
+        public async void CreateFactory()
         {
-            GameClient.Instance.ActivePlayer.PostCreateFactoryOrder(this.Definition);
+            try
+            {
+                await GameClient.Instance.ActivePlayer.PostCreateFactoryOrder(this.Definition);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning(exception.Message);
+            }
         }
 
-        public void DestroyFactory()
+        public async void DestroyFactory()
         {
-            GameClient.Instance.ActivePlayer.PostDestroyFactoryOrder(this.Definition);
+            try
+            {
+                await GameClient.Instance.ActivePlayer.PostDestroyFactoryOrder(this.Definition);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning(exception.Message);
+            }
         }
 
         private void Awake()
