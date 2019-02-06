@@ -30,7 +30,7 @@ namespace UI
 
         public void ResearchTechnology()
         {
-            GameClient.Instance.ActivePlayer.ResearchTechnology(this.Definition);
+            GameClient.Instance.ActivePlayer.PostResearchTechnologyOrder(this.Definition);
         }
         
         private void Awake()

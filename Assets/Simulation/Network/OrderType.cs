@@ -8,5 +8,8 @@
         JoinGame,
 
         CraftRecipe,
+        CreateFactory,
+        DestroyFactory,
+        ResearchTechnology,
     }
 }

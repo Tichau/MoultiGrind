@@ -45,12 +45,12 @@
 
         public void CreateFactory()
         {
-            GameClient.Instance.ActivePlayer.CreateFactory(this.Definition);
+            GameClient.Instance.ActivePlayer.PostCreateFactoryOrder(this.Definition);
         }
 
         public void DestroyFactory()
         {
-            GameClient.Instance.ActivePlayer.DestroyFactory(this.Definition);
+            GameClient.Instance.ActivePlayer.PostDestroyFactoryOrder(this.Definition);
         }
 
         private void Awake()
