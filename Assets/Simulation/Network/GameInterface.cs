@@ -92,8 +92,8 @@ namespace Simulation.Network
         public OrderType Type;
         public OrderContext Context;
 
-        public delegate OrderStatus ServerPassDelegate(OrderHeader header, BinaryReader dataFromClient, BinaryWriter dataToClient);
-        public delegate void ClientPassDelegate(OrderHeader header, BinaryReader dataFromServer);
+        public delegate OrderStatus ServerPassDelegate(BinaryReader dataFromClient, BinaryWriter dataToClient);
+        public delegate void ClientPassDelegate(BinaryReader dataFromServer);
 
         public ServerPassDelegate ServerPass;
         public ClientPassDelegate ClientPass;

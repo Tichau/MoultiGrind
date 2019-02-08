@@ -110,7 +110,7 @@ namespace Simulation.Network
                         Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");
                         Debug.Assert(orderData.ClientPass != null, $"No client pass for order {orderData.Type}.");
                         
-                        orderData.ClientPass.Invoke(orderHeader, buffer);
+                        orderData.ClientPass.Invoke(buffer);
                         orderHeader.Status = OrderStatus.Executed;
                     }
 

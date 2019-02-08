@@ -88,7 +88,7 @@ namespace Simulation.Network
 
                     this.WriteBuffer.Position = 0;
                     orderHeader.Write(this.Writer);
-                    orderHeader.Status = orderData.ServerPass.Invoke(orderHeader, buffer, this.Writer);
+                    orderHeader.Status = orderData.ServerPass.Invoke(buffer, this.Writer);
                     Debug.Assert(this.WriteBuffer.Position - MessageHeader.SizeOf >= 0);
                     orderHeader.BaseHeader.Size = (ushort)(this.WriteBuffer.Position - MessageHeader.SizeOf);
 

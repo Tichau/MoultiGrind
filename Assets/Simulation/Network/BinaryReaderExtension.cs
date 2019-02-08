@@ -5,13 +5,16 @@ namespace Simulation.Network
 {
     public static class BinaryReaderExtension
     {
-        public static void ReadCreateGameOrder(this BinaryReader stream, out ulong timeElapsedPerTick)
+        public static void ReadCreateGameOrder(this BinaryReader stream, out byte gameInstanceId, out ulong timeElapsedPerTick)
         {
+            gameInstanceId = stream.ReadByte();
             timeElapsedPerTick = stream.ReadUInt64();
         }
 
-        public static void ReadJoinGameOrder(this BinaryReader stream, out ulong timeElapsedPerTick, out ulong durationBetweenTwoTicks, out byte playerId, out Game game)
+        public static void ReadJoinGameOrder(this BinaryReader stream, out byte gameInstanceId, out byte clientId, out ulong timeElapsedPerTick, out ulong durationBetweenTwoTicks, out byte playerId, out Game game)
         {
+            gameInstanceId = stream.ReadByte();
+            clientId = stream.ReadByte();
             timeElapsedPerTick = stream.ReadUInt64();
             durationBetweenTwoTicks = stream.ReadUInt64();
             playerId = stream.ReadByte();

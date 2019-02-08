@@ -59,7 +59,7 @@ namespace Simulation
         }
 
         [OrderServerPass(OrderType.CreateFactory)]
-        private OrderStatus CreateFactoryServerPass(OrderHeader header, BinaryReader dataFromClient, BinaryWriter dataToClient)
+        private OrderStatus CreateFactoryServerPass(BinaryReader dataFromClient, BinaryWriter dataToClient)
         {
             ReadCreateFactoryOrder(dataFromClient, out var recipeId);
 
@@ -78,7 +78,7 @@ namespace Simulation
         }
 
         [OrderClientPass(OrderType.CreateFactory)]
-        private void CreateFactoryClientPass(OrderHeader header, BinaryReader dataFromServer)
+        private void CreateFactoryClientPass(BinaryReader dataFromServer)
         {
             ReadCreateFactoryOrder(dataFromServer, out var recipeId);
 

@@ -31,6 +31,8 @@ namespace Simulation
         public void Start()
         {
             this.gameThread.Start();
+
+            Debug.Log($"Game {this.Id} started.");
         }
 
         public void Stop()

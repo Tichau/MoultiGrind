@@ -51,7 +51,7 @@ namespace Simulation
         }
 
         [OrderServerPass(OrderType.CreditResources)]
-        private OrderStatus CreditResourcesServerPass(OrderHeader header, BinaryReader dataFromClient, BinaryWriter dataToClient)
+        private OrderStatus CreditResourcesServerPass(BinaryReader dataFromClient, BinaryWriter dataToClient)
         {
             ReadCreditResourcesOrder(dataFromClient, out var resource, out var amount);
             
@@ -68,7 +68,7 @@ namespace Simulation
         }
 
         [OrderClientPass(OrderType.CreditResources)]
-        private void CreditResourcesClientPass(OrderHeader header, BinaryReader dataFromServer)
+        private void CreditResourcesClientPass(BinaryReader dataFromServer)
         {
             ReadCreditResourcesOrder(dataFromServer, out var resource, out var amount);
 

@@ -54,7 +54,7 @@
         }
 
         [OrderServerPass(OrderType.CraftRecipe)]
-        private OrderStatus CraftRecipeServerPass(OrderHeader header, BinaryReader dataFromClient, BinaryWriter dataToClient)
+        private OrderStatus CraftRecipeServerPass(BinaryReader dataFromClient, BinaryWriter dataToClient)
         {
             ReadCraftRecipeOrder(dataFromClient, out var recipeId);
 
@@ -73,7 +73,7 @@
         }
 
         [OrderClientPass(OrderType.CraftRecipe)]
-        private void CraftRecipeClientPass(OrderHeader header, BinaryReader dataFromServer)
+        private void CraftRecipeClientPass(BinaryReader dataFromServer)
         {
             ReadCraftRecipeOrder(dataFromServer, out var recipeId);
 

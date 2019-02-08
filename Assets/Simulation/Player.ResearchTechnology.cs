@@ -64,7 +64,7 @@
         }
 
         [OrderServerPass(OrderType.ResearchTechnology)]
-        private OrderStatus ResearchTechnologyServerPass(OrderHeader header, BinaryReader dataFromClient, BinaryWriter dataToClient)
+        private OrderStatus ResearchTechnologyServerPass(BinaryReader dataFromClient, BinaryWriter dataToClient)
         {
             ReadResearchTechnologyOrder(dataFromClient, out var recipeId);
 
@@ -83,7 +83,7 @@
         }
 
         [OrderClientPass(OrderType.ResearchTechnology)]
-        private void ResearchTechnologyClientPass(OrderHeader header, BinaryReader dataFromServer)
+        private void ResearchTechnologyClientPass(BinaryReader dataFromServer)
         {
             ReadResearchTechnologyOrder(dataFromServer, out var recipeId);
 

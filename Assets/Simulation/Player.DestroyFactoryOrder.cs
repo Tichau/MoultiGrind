@@ -47,7 +47,7 @@
         }
 
         [OrderServerPass(OrderType.DestroyFactory)]
-        private OrderStatus DestroyFactoryServerPass(OrderHeader header, BinaryReader dataFromClient, BinaryWriter dataToClient)
+        private OrderStatus DestroyFactoryServerPass(BinaryReader dataFromClient, BinaryWriter dataToClient)
         {
             ReadDestroyFactoryOrder(dataFromClient, out var recipeId);
 
@@ -66,7 +66,7 @@
         }
 
         [OrderClientPass(OrderType.DestroyFactory)]
-        private void DestroyFactoryClientPass(OrderHeader header, BinaryReader dataFromServer)
+        private void DestroyFactoryClientPass(BinaryReader dataFromServer)
         {
             ReadDestroyFactoryOrder(dataFromServer, out var recipeId);
 
