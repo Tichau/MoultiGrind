@@ -33,24 +33,28 @@ public class TestGameManager : MonoBehaviour
         this.client?.Update();
 
 #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.A))
+        if (GameClient.Instance.Game != null)
         {
-            GameClient.Instance.ActivePlayer.PostCreditResourcesOrder(ResourceType.AssemblingMachine1, 1);
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            GameClient.Instance.ActivePlayer.PostCreditResourcesOrder(ResourceType.SciencePack1, 1);
-        }
-        else if (Input.GetKeyDown(KeyCode.KeypadPlus))
-        {
-            //this.TimeElapsedPerTick *= 2;
-        }
-        else if (Input.GetKeyDown(KeyCode.KeypadMinus))
-        {
-            //if (this.TimeElapsedPerTick > 1)
-            //{
-            //    this.TimeElapsedPerTick /= 2;
-            //}
+            var gameTimeElapsedPerTick = (ulong)GameClient.Instance.Game.TimeElapsedPerTick;
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                GameClient.Instance.ActivePlayer.PostCreditResourcesOrder(ResourceType.AssemblingMachine1, 1);
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                GameClient.Instance.ActivePlayer.PostCreditResourcesOrder(ResourceType.SciencePack1, 1);
+            }
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                GameClient.Instance.Game.PostChangeGameSpeedOrder(gameTimeElapsedPerTick * 2);
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                if (gameTimeElapsedPerTick > 1)
+                {
+                    GameClient.Instance.Game.PostChangeGameSpeedOrder(gameTimeElapsedPerTick / 2);
+                }
+            }
         }
 #endif
     }

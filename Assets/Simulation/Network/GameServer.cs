@@ -8,6 +8,8 @@ namespace Simulation.Network
 {
     public partial class GameServer : GameInterface
     {
+        public const byte InvalidGameId = 0;
+
         private readonly List<GameInstance> hostedGames = new List<GameInstance>();
         private readonly Server server;
         
@@ -73,14 +75,31 @@ namespace Simulation.Network
                     var orderData = this.OrderById[(int) orderHeader.Type];
                     if (orderData.Context == OrderContext.Invalid)
                     {
-                        var game = this.hostedGames[orderHeader.GameInstanceId];
-                        if (!game.Game.TryGetPlayer(orderHeader.ClientId, out Player player))
+                        Debug.Assert(orderHeader.GameInstanceId != InvalidGameId);
+
+                        var gamesCount = this.hostedGames.Count;
+                        Game game = null;
+                        for (int index = 0; index < gamesCount; index++)
                         {
-                            Debug.LogWarning("Invalid order.");
-                            return;
+                            if (this.hostedGames[index].Id == orderHeader.GameInstanceId)
+                            {
+                                game = this.hostedGames[index].Game;
+                                break;
+                            }
                         }
 
-                        orderData = player.OrderById[(int) orderHeader.Type];
+                        orderData = game.OrderById[(int) orderHeader.Type];
+                        if (orderData.Context == OrderContext.Invalid)
+                        {
+                            Debug.Assert(orderHeader.ClientId != Server.InvalidClientId);
+                            if (!game.TryGetPlayer(orderHeader.ClientId, out Player player))
+                            {
+                                Debug.LogWarning("Invalid order.");
+                                return;
+                            }
+
+                            orderData = player.OrderById[(int)orderHeader.Type];
+                        }
                     }
 
                     Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");

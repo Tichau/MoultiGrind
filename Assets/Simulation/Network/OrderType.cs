@@ -7,6 +7,8 @@
         CreateGame,
         JoinGame,
 
+        ChangeGameSpeed,
+
         CraftRecipe,
         CreateFactory,
         DestroyFactory,

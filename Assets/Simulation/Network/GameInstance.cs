@@ -25,6 +25,7 @@ namespace Simulation
             this.Id = id;
             this.DurationBetweenTwoTicks = (int)durationBetweenTwoTicks;
             this.Game = new Game(timeElapsedPerTick);
+            this.Game.Id = id;
             this.gameThread = new Thread(this.GameLoop);
         }
 

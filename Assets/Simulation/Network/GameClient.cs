@@ -8,7 +8,6 @@ namespace Simulation.Network
     public partial class GameClient : GameInterface
     {
         public Game Game;
-        public byte GameId;
         public byte PlayerId;
 
         private ulong durationBetweenTwoTicks;
@@ -98,13 +97,20 @@ namespace Simulation.Network
                         var orderData = this.OrderById[(int)orderHeader.Type];
                         if (orderData.Context == OrderContext.Invalid)
                         {
-                            if (this.Game == null || !this.Game.TryGetPlayer(orderHeader.ClientId, out Player player))
-                            {
-                                Debug.LogWarning("Invalid order.");
-                                return;
-                            }
+                            Debug.Assert(orderHeader.GameInstanceId != GameServer.InvalidGameId);
+                            Debug.Assert(this.Game != null && this.Game.Id == orderHeader.GameInstanceId);
 
-                            orderData = player.OrderById[(int)orderHeader.Type];
+                            orderData = this.Game.OrderById[(int)orderHeader.Type];
+                            if (orderData.Context == OrderContext.Invalid)
+                            {
+                                if (!this.Game.TryGetPlayer(orderHeader.ClientId, out Player player))
+                                {
+                                    Debug.LogWarning("Invalid order.");
+                                    return;
+                                }
+
+                                orderData = player.OrderById[(int) orderHeader.Type];
+                            }
                         }
 
                         Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");
@@ -126,7 +132,7 @@ namespace Simulation.Network
         {
             this.WriteBuffer.Position = 0;
             var id = this.nextOrderId++;
-            var header = new OrderHeader(id, type, this.GameId, this.client.Id);
+            var header = new OrderHeader(id, type, this.Game != null ? this.Game.Id : GameServer.InvalidGameId, this.client.Id);
             header.Write(this.Writer);
             return header;
         }
