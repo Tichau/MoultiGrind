@@ -7,13 +7,18 @@ namespace Simulation.Network
 {
     public abstract class GameInterface : IDisposable
     {
+        public const byte InvalidGameId = 0;
+
         protected MemoryStream WriteBuffer = new MemoryStream();
         internal BinaryWriter Writer;
 
         protected OrderData[] OrderById;
 
 #if UNITY_EDITOR
-        public OrderData[] Test_OrderById => this.OrderById;
+        public bool Test_TryGetOrderData(OrderHeader header, out OrderData orderData)
+        {
+            return this.TryGetOrderData(header, out orderData);
+        }
 #endif
 
         protected GameInterface()
@@ -35,6 +40,38 @@ namespace Simulation.Network
 
         public abstract void Dispose();
 
+        protected abstract bool TryGetGame(byte gameId, out Simulation.Game.Game game);
+
+        protected bool TryGetOrderData(OrderHeader header, out OrderData orderData)
+        {
+            orderData = this.OrderById[(int)header.Type];
+            if (orderData.Context != OrderContext.Invalid)
+            {
+                return true;
+            }
+
+            Debug.Assert(header.GameInstanceId != InvalidGameId);
+            if (!this.TryGetGame(header.GameInstanceId, out var game))
+            {
+                return false;
+            }
+
+            orderData = game.OrderById[(int) header.Type];
+            if (orderData.Context != OrderContext.Invalid)
+            {
+                return true;
+            }
+
+            Debug.Assert(header.ClientId != Framework.Network.Server.InvalidClientId);
+            if (!game.TryGetPlayer(header.ClientId, out Simulation.Player.Player player))
+            {
+                return false;
+            }
+
+            orderData = player.OrderById[(int) header.Type];
+            return true;
+        }
+        
         private void GenerateOrderData()
         {
             // Initialize order types array.

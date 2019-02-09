@@ -1,24 +1,20 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Framework;
 using Simulation.Network;
 using UnityEngine;
 
-namespace Simulation
+namespace Simulation.Player
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using UnityEditor;
-
     public partial class Player
     {
         public Resource[] Resources;
         public List<Factory> Factories = new List<Factory>();
         public List<CraftTask> ConstructionQueue = new List<CraftTask>();
 
-        public Dictionary<TechnologyDefinition, ResearchStatus> TechnologyStatesByDefinition = new Dictionary<TechnologyDefinition, ResearchStatus>();
+        public Dictionary<Simulation.Data.TechnologyDefinition, ResearchStatus> TechnologyStatesByDefinition = new Dictionary<Simulation.Data.TechnologyDefinition, ResearchStatus>();
 
         internal byte ClientId;
         internal OrderData[] OrderById;
@@ -145,7 +141,7 @@ namespace Simulation
             throw new NotImplementedException();
         }
 
-        public bool IsRecipeAvailable(RecipeDefinition definition)
+        public bool IsRecipeAvailable(Simulation.Data.RecipeDefinition definition)
         {
             foreach (var technology in TechnologyStatesByDefinition)
             {

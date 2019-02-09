@@ -1,17 +1,13 @@
-﻿using Framework;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Framework;
+using Simulation.Network;
 
-namespace Simulation
+namespace Simulation.Player
 {
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using UnityEngine;
-
-    using Simulation.Network;
-
     public partial class Player
     {
-        public bool CanCreateFactory(RecipeDefinition definition)
+        public bool CanCreateFactory(Simulation.Data.RecipeDefinition definition)
         {
             if (this.Resources[(int)ResourceType.AssemblingMachine1].Amount < new Number(1))
             {
@@ -21,7 +17,7 @@ namespace Simulation
             return true;
         }
 
-        public async Task PostCreateFactoryOrder(RecipeDefinition definition)
+        public async Task PostCreateFactoryOrder(Simulation.Data.RecipeDefinition definition)
         {
             var header = GameClient.Instance.WriteOrderHeader(OrderType.CreateFactory);
             WriteCreateFactoryOrder(GameClient.Instance.Writer, definition.Id);
@@ -44,7 +40,7 @@ namespace Simulation
             recipeId = stream.ReadUInt32();
         }
 
-        private void ApplyCreateFactoryOrder(RecipeDefinition definition)
+        private void ApplyCreateFactoryOrder(Simulation.Data.RecipeDefinition definition)
         {
             this.Resources[(int)ResourceType.AssemblingMachine1].Amount -= new Number(1);
 
@@ -63,7 +59,7 @@ namespace Simulation
         {
             ReadCreateFactoryOrder(dataFromClient, out var recipeId);
 
-            RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
            
             if (!this.CanCreateFactory(definition))
             {
@@ -82,7 +78,7 @@ namespace Simulation
         {
             ReadCreateFactoryOrder(dataFromServer, out var recipeId);
 
-            RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
 
             this.ApplyCreateFactoryOrder(definition);
         }

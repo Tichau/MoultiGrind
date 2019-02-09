@@ -1,10 +1,9 @@
-﻿using Framework;
+﻿using System;
+using Framework;
+using UnityEngine;
 
-namespace Simulation
+namespace Simulation.Data
 {
-    using System;
-    using UnityEngine;
-
     [CreateAssetMenu(fileName = "Recipe", menuName = "Recipe Definition", order = 1)]
     public class RecipeDefinition : ScriptableObject, IDatabaseElement
     {

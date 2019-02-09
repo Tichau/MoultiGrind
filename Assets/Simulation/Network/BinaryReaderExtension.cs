@@ -11,7 +11,7 @@ namespace Simulation.Network
             timeElapsedPerTick = stream.ReadUInt64();
         }
 
-        public static void ReadJoinGameOrder(this BinaryReader stream, out byte gameInstanceId, out byte clientId, out ulong timeElapsedPerTick, out ulong durationBetweenTwoTicks, out byte playerId, out Game game)
+        public static void ReadJoinGameOrder(this BinaryReader stream, out byte gameInstanceId, out byte clientId, out ulong timeElapsedPerTick, out ulong durationBetweenTwoTicks, out byte playerId, out Simulation.Game.Game game)
         {
             gameInstanceId = stream.ReadByte();
             clientId = stream.ReadByte();
@@ -21,7 +21,7 @@ namespace Simulation.Network
             stream.ParseGame(out game);
         }
 
-        public static void ParseGame(this BinaryReader stream, out Game game)
+        public static void ParseGame(this BinaryReader stream, out Simulation.Game.Game game)
         {
             var isNull = stream.ReadBoolean();
             if (isNull)
@@ -30,7 +30,7 @@ namespace Simulation.Network
                 return;
             }
 
-            game = new Game();
+            game = new Simulation.Game.Game();
             game.Deserialize(stream);
         }
     }

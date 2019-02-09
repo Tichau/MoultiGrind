@@ -4,21 +4,28 @@
 
     public class Databases : MonoBehaviour
     {
-        public RecipeDefinition[] RecipeDefinitions;
-        public TechnologyDefinition[] TechnologyDefinitions;
+        public Data.RecipeDefinition[] RecipeDefinitions;
+        public Data.TechnologyDefinition[] TechnologyDefinitions;
 
         public static Databases Instance;
         
         private void Awake()
         {
-            for (uint index = 0; index < this.RecipeDefinitions.Length; index++)
+            try
             {
-                this.RecipeDefinitions[index].Id = index;
-            }
+                for (uint index = 0; index < this.RecipeDefinitions.Length; index++)
+                {
+                    this.RecipeDefinitions[index].Id = index;
+                }
 
-            for (uint index = 0; index < this.TechnologyDefinitions.Length; index++)
+                for (uint index = 0; index < this.TechnologyDefinitions.Length; index++)
+                {
+                    this.TechnologyDefinitions[index].Id = index;
+                }
+            }
+            catch (System.Exception exception)
             {
-                this.TechnologyDefinitions[index].Id = index;
+                Debug.LogException(exception);
             }
 
             Debug.Assert(Databases.Instance == null, "Instance should be null before assignation.");

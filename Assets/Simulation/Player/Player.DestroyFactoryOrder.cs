@@ -1,21 +1,19 @@
-﻿namespace Simulation
+﻿using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Framework;
+using Simulation.Network;
+
+namespace Simulation.Player
 {
-    using System.Linq;
-
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using Framework;
-    using Simulation.Network;
-
     public partial class Player
     {
-        public bool CanDestroyFactory(RecipeDefinition definition)
+        public bool CanDestroyFactory(Simulation.Data.RecipeDefinition definition)
         {
             return this.Factories.Any(factory => factory.Definition == definition && factory.Count > 0);
         }
 
-        public async Task PostDestroyFactoryOrder(RecipeDefinition definition)
+        public async Task PostDestroyFactoryOrder(Simulation.Data.RecipeDefinition definition)
         {
             var header = GameClient.Instance.WriteOrderHeader(OrderType.DestroyFactory);
             WriteDestroyFactoryOrder(GameClient.Instance.Writer, definition.Id);
@@ -38,7 +36,7 @@
             recipeId = stream.ReadUInt32();
         }
 
-        private void ApplyDestroyFactoryOrder(RecipeDefinition definition)
+        private void ApplyDestroyFactoryOrder(Simulation.Data.RecipeDefinition definition)
         {
             this.Resources[(int)ResourceType.AssemblingMachine1].Amount += new Number(1);
 
@@ -51,7 +49,7 @@
         {
             ReadDestroyFactoryOrder(dataFromClient, out var recipeId);
 
-            RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
            
             if (!this.CanDestroyFactory(definition))
             {
@@ -70,7 +68,7 @@
         {
             ReadDestroyFactoryOrder(dataFromServer, out var recipeId);
 
-            RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
 
             this.ApplyDestroyFactoryOrder(definition);
         }

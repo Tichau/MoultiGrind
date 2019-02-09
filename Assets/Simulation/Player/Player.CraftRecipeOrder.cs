@@ -1,15 +1,12 @@
-﻿namespace Simulation
+﻿using System.IO;
+using System.Threading.Tasks;
+using Simulation.Network;
+
+namespace Simulation.Player
 {
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using UnityEngine;
-
-    using Simulation.Network;
-
     public partial class Player
     {
-        public bool CanCraftRecipe(RecipeDefinition definition)
+        public bool CanCraftRecipe(Simulation.Data.RecipeDefinition definition)
         {
             bool resourcePrerequisites = true;
             foreach (var resource in definition.Inputs)
@@ -20,7 +17,7 @@
             return resourcePrerequisites;
         }
 
-        public async Task PostCraftRecipeOrder(RecipeDefinition definition)
+        public async Task PostCraftRecipeOrder(Simulation.Data.RecipeDefinition definition)
         {
             var header = GameClient.Instance.WriteOrderHeader(OrderType.CraftRecipe);
             WriteCraftRecipeOrder(GameClient.Instance.Writer, definition.Id);
@@ -43,7 +40,7 @@
             recipeId = stream.ReadUInt32();
         }
 
-        private void ApplyCraftRecipeOrder(RecipeDefinition definition)
+        private void ApplyCraftRecipeOrder(Simulation.Data.RecipeDefinition definition)
         {
             foreach (var resource in definition.Inputs)
             {
@@ -58,7 +55,7 @@
         {
             ReadCraftRecipeOrder(dataFromClient, out var recipeId);
 
-            RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
            
             if (!this.CanCraftRecipe(definition))
             {
@@ -77,7 +74,7 @@
         {
             ReadCraftRecipeOrder(dataFromServer, out var recipeId);
 
-            RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
 
             this.ApplyCraftRecipeOrder(definition);
         }

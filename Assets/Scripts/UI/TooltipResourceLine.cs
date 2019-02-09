@@ -14,12 +14,12 @@ public class TooltipResourceLine : MonoBehaviour
     {
         set
         {
-            if (value is ResourceDefinition resourceDefinition)
+            if (value is Simulation.Data.ResourceDefinition resourceDefinition)
             {
                 this.Name.text = resourceDefinition.Name.ToString();
                 this.Amount.text = resourceDefinition.Amount.ToString();
             }
-            else if (value is RecipeDefinition recipeDefinition)
+            else if (value is Simulation.Data.RecipeDefinition recipeDefinition)
             {
                 this.Name.text = recipeDefinition.name;
                 this.Amount.text = string.Empty;

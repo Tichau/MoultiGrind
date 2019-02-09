@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-[CustomEditor(typeof(RecipeDefinition))]
+[CustomEditor(typeof(Simulation.Data.RecipeDefinition))]
 public class RecipeDefinitionDrawer : Editor
 {
     private SerializedProperty inputProperty;
@@ -54,7 +54,7 @@ public class RecipeDefinitionDrawer : Editor
 
     public override void OnInspectorGUI()
     {
-        RecipeDefinition myTarget = (RecipeDefinition)target;
+        Simulation.Data.RecipeDefinition myTarget = (Simulation.Data.RecipeDefinition)target;
         
         EditorGUILayout.PropertyField(descriptionProperty);
 

@@ -7,7 +7,7 @@ namespace Simulation.Network
 {
     public partial class GameClient : GameInterface
     {
-        public Game Game;
+        public Simulation.Game.Game Game;
         public byte PlayerId;
 
         private ulong durationBetweenTwoTicks;
@@ -27,7 +27,7 @@ namespace Simulation.Network
             this.Writer = new BinaryWriter(this.WriteBuffer);
         }
 
-        public Player ActivePlayer => this.Game.Players[this.PlayerId];
+        public Simulation.Player.Player ActivePlayer => this.Game.Players[this.PlayerId];
 
         public override void Start()
         {
@@ -79,6 +79,12 @@ namespace Simulation.Network
             }
         }
 
+        protected override bool TryGetGame(byte gameId, out Simulation.Game.Game game)
+        {
+            game = this.Game;
+            return game != null && game.Id == gameId;
+        }
+
         private void OnMessageReceived(MessageHeader header, BinaryReader buffer)
         {
             switch (header.Type)
@@ -93,24 +99,10 @@ namespace Simulation.Network
 
                     if (orderHeader.Status == OrderStatus.Validated)
                     {
-                        // Get order data.
-                        var orderData = this.OrderById[(int)orderHeader.Type];
-                        if (orderData.Context == OrderContext.Invalid)
+                        if (!this.TryGetOrderData(orderHeader, out var orderData))
                         {
-                            Debug.Assert(orderHeader.GameInstanceId != GameServer.InvalidGameId);
-                            Debug.Assert(this.Game != null && this.Game.Id == orderHeader.GameInstanceId);
-
-                            orderData = this.Game.OrderById[(int)orderHeader.Type];
-                            if (orderData.Context == OrderContext.Invalid)
-                            {
-                                if (!this.Game.TryGetPlayer(orderHeader.ClientId, out Player player))
-                                {
-                                    Debug.LogWarning("Invalid order.");
-                                    return;
-                                }
-
-                                orderData = player.OrderById[(int) orderHeader.Type];
-                            }
+                            Debug.LogWarning($"No order data found for order {orderHeader.Type}.");
+                            return;
                         }
 
                         Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");

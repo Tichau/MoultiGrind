@@ -10,7 +10,7 @@ namespace UI
 
     public class FactoryList : UIList<RecipeLine>
     {
-        private Predicate<RecipeDefinition> displayPredicate = def => GameClient.Instance.ActivePlayer.IsRecipeAvailable(def);
+        private Predicate<Simulation.Data.RecipeDefinition> displayPredicate = def => GameClient.Instance.ActivePlayer.IsRecipeAvailable(def);
         
         private void Update()
         {

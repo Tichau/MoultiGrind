@@ -1,11 +1,10 @@
-﻿namespace Simulation
+﻿using System.IO;
+using System.Threading.Tasks;
+using Framework;
+using Simulation.Network;
+
+namespace Simulation.Game
 {
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using Framework;
-    using Simulation.Network;
-
     public partial class Game
     {
         public bool CanChangeGameSpeed(ulong timeElapsedPerTick)

@@ -22,9 +22,9 @@
         public Text CraftRecipeCount;
         public Text CraftRecipeProgress;
 
-        private RecipeDefinition definition;
+        private Simulation.Data.RecipeDefinition definition;
 
-        public RecipeDefinition Definition
+        public Simulation.Data.RecipeDefinition Definition
         {
             get
             {

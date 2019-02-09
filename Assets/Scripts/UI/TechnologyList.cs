@@ -10,7 +10,7 @@ namespace UI
 
     public class TechnologyList : UIList<TechnologyLine>
     {
-        private Predicate<KeyValuePair<TechnologyDefinition, ResearchStatus>> displayPredicate = def => def.Value == ResearchStatus.Available || def.Value == ResearchStatus.InProgress;
+        private Predicate<KeyValuePair<Simulation.Data.TechnologyDefinition, ResearchStatus>> displayPredicate = def => def.Value == ResearchStatus.Available || def.Value == ResearchStatus.InProgress;
 
         private void Update()
         {

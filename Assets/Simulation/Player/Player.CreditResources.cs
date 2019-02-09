@@ -1,14 +1,10 @@
-﻿using Framework;
+﻿using System.IO;
+using System.Threading.Tasks;
+using Framework;
+using Simulation.Network;
 
-namespace Simulation
+namespace Simulation.Player
 {
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using UnityEngine;
-
-    using Simulation.Network;
-
     public partial class Player
     {
         public bool CanCreditResources(ResourceType resource, long amount)

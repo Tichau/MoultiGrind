@@ -4,11 +4,11 @@
 
     public class CraftTask
     {
-        public readonly RecipeDefinition Definition;
+        public readonly Simulation.Data.RecipeDefinition Definition;
 
         public Number TimeSpent;
 
-        public CraftTask(RecipeDefinition definition)
+        public CraftTask(Simulation.Data.RecipeDefinition definition)
         {
             this.Definition = definition;
         }

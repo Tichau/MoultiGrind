@@ -1,15 +1,12 @@
-﻿namespace Simulation
+﻿using System.IO;
+using System.Threading.Tasks;
+using Simulation.Network;
+
+namespace Simulation.Player
 {
-    using System.IO;
-    using System.Threading.Tasks;
-
-    using UnityEngine;
-
-    using Simulation.Network;
-
     public partial class Player
     {
-        public bool CanResearchTechnology(TechnologyDefinition definition)
+        public bool CanResearchTechnology(Simulation.Data.TechnologyDefinition definition)
         {
             if (this.TechnologyStatesByDefinition[definition] != ResearchStatus.Available)
             {
@@ -25,7 +22,7 @@
             return resourcePrerequisites;
         }
 
-        public async Task PostResearchTechnologyOrder(TechnologyDefinition definition)
+        public async Task PostResearchTechnologyOrder(Simulation.Data.TechnologyDefinition definition)
         {
             var header = GameClient.Instance.WriteOrderHeader(OrderType.ResearchTechnology);
             WriteResearchTechnologyOrder(GameClient.Instance.Writer, definition.Id);
@@ -48,7 +45,7 @@
             recipeId = stream.ReadUInt32();
         }
 
-        private void ApplyResearchTechnologyOrder(TechnologyDefinition definition)
+        private void ApplyResearchTechnologyOrder(Simulation.Data.TechnologyDefinition definition)
         {
             if (!this.CanResearchTechnology(definition))
             {
@@ -68,7 +65,7 @@
         {
             ReadResearchTechnologyOrder(dataFromClient, out var recipeId);
 
-            TechnologyDefinition definition = Databases.Instance.TechnologyDefinitions[recipeId];
+            Simulation.Data.TechnologyDefinition definition = Databases.Instance.TechnologyDefinitions[recipeId];
            
             if (!this.CanResearchTechnology(definition))
             {
@@ -87,7 +84,7 @@
         {
             ReadResearchTechnologyOrder(dataFromServer, out var recipeId);
 
-            TechnologyDefinition definition = Databases.Instance.TechnologyDefinitions[recipeId];
+            Simulation.Data.TechnologyDefinition definition = Databases.Instance.TechnologyDefinitions[recipeId];
 
             this.ApplyResearchTechnologyOrder(definition);
         }

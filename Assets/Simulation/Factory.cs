@@ -4,12 +4,12 @@ namespace Simulation
 {
     public class Factory
     {
-        public RecipeDefinition Definition;
+        public Simulation.Data.RecipeDefinition Definition;
 
         public Number Productivity;
         public int Count;
 
-        public Factory(RecipeDefinition definition)
+        public Factory(Simulation.Data.RecipeDefinition definition)
         {
             this.Definition = definition;
         }

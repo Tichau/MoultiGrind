@@ -29,13 +29,13 @@ public class SimulationTest
         var databasesGameObject = new GameObject("Databases");
         Databases.Instance = databasesGameObject.AddComponent<Databases>();
 
-        Databases.Instance.RecipeDefinitions = new RecipeDefinition[0];
-        Databases.Instance.TechnologyDefinitions = new TechnologyDefinition[0];
+        Databases.Instance.RecipeDefinitions = new Simulation.Data.RecipeDefinition[0];
+        Databases.Instance.TechnologyDefinitions = new Simulation.Data.TechnologyDefinition[0];
 
         using (GameServer server = new GameServer())
         {
             server.Start();
-            Thread.Sleep(500);
+            Thread.Sleep(100);
 
             Assert.AreEqual(0, server.GameCount);
             using (GameClient client = new GameClient())
@@ -56,32 +56,6 @@ public class SimulationTest
 
                 Assert.AreEqual(1, server.GameCount);
                 Assert.NotNull(client.Game);
-            }
-        }
-    }
-
-    [Test]
-    public void OrderPassesAreRetrievedCorrectly()
-    {
-        using (GameServer server = new GameServer())
-        {
-            // Start at 1 to skip invalid order type.
-            for (int index = 1; index < server.Test_OrderById.Length; index++)
-            {
-                var orderData = server.Test_OrderById[index];
-                Assert.NotNull(orderData.ServerPass, $"{orderData.Type} order should have a server pass.");
-                Assert.AreNotEqual(OrderContext.Invalid, orderData.Context, $"{orderData.Type} order context should not be invalid.");
-            }
-        }
-
-        using (GameClient client = new GameClient())
-        {
-            // Start at 1 to skip invalid order type.
-            for (int index = 1; index < client.Test_OrderById.Length; index++)
-            {
-                var orderData = client.Test_OrderById[index];
-                Assert.NotNull(orderData.ClientPass, $"{orderData.Type} order should have a client pass.");
-                Assert.AreNotEqual(OrderContext.Invalid, orderData.Context, $"{orderData.Type} order context should not be invalid.");
             }
         }
     }

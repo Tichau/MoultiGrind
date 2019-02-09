@@ -1,16 +1,15 @@
-﻿namespace Simulation
-{
-    using System;
-    using UnityEngine;
+﻿using UnityEngine;
 
+namespace Simulation.Data
+{
     [CreateAssetMenu(fileName = "Technology", menuName = "Technology Definition", order = 1)]
     public class TechnologyDefinition : ScriptableObject, IDatabaseElement
     {
         [TextArea] public string Description;
 
-        public ResourceDefinition[] Costs;
+        public Simulation.Data.ResourceDefinition[] Costs;
 
-        public RecipeDefinition[] Unlocks;
+        public Simulation.Data.RecipeDefinition[] Unlocks;
 
         public uint Id { get; internal set; }
     }

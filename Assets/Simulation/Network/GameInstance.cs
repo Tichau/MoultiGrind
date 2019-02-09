@@ -7,7 +7,7 @@ namespace Simulation
     public class GameInstance
     {
         public readonly byte Id;
-        public readonly Game Game;
+        public readonly Simulation.Game.Game Game;
         public readonly int DurationBetweenTwoTicks;
 
         private readonly Thread gameThread;
@@ -24,7 +24,7 @@ namespace Simulation
             Debug.Assert(timeElapsedPerTick >= 1);
             this.Id = id;
             this.DurationBetweenTwoTicks = (int)durationBetweenTwoTicks;
-            this.Game = new Game(timeElapsedPerTick);
+            this.Game = new Game.Game(timeElapsedPerTick);
             this.Game.Id = id;
             this.gameThread = new Thread(this.GameLoop);
         }

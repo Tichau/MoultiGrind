@@ -11,9 +11,9 @@ namespace UI
         public Text Name;
         public Button ResearchButton;
 
-        private TechnologyDefinition definition;
+        private Simulation.Data.TechnologyDefinition definition;
 
-        public TechnologyDefinition Definition
+        public Simulation.Data.TechnologyDefinition Definition
         {
             get
             {

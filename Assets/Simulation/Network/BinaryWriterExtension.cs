@@ -11,7 +11,7 @@ namespace Simulation.Network
             stream.Write(timeElapsedPerTick);
         }
 
-        public static void WriteJoinGameOrder(this BinaryWriter stream, byte gameInstanceId, byte clientId, ulong timeElapsedPerTick, ulong durationBetweenTwoTicks, byte playerId, Game game)
+        public static void WriteJoinGameOrder(this BinaryWriter stream, byte gameInstanceId, byte clientId, ulong timeElapsedPerTick, ulong durationBetweenTwoTicks, byte playerId, Simulation.Game.Game game)
         {
             stream.Write(gameInstanceId);
             stream.Write(clientId);
@@ -21,7 +21,7 @@ namespace Simulation.Network
             stream.WriteGame(game);
         }
 
-        public static void WriteGame(this BinaryWriter stream, Game game)
+        public static void WriteGame(this BinaryWriter stream, Simulation.Game.Game game)
         {
             var isNull = game == null;
             stream.Write(isNull);

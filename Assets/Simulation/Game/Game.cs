@@ -1,18 +1,16 @@
-﻿namespace Simulation
+﻿using System;
+using System.IO;
+using System.Reflection;
+using Framework;
+using Simulation.Network;
+using UnityEngine;
+
+namespace Simulation.Game
 {
-    using System;
-    using System.IO;
-    using System.Reflection;
-
-    using UnityEngine;
-
-    using Framework;
-    using Simulation.Network;
-
     public partial class Game
     {
         public Number TimeElapsedPerTick;
-        public Player[] Players;
+        public Player.Player[] Players;
 
         public int TickIndex = 0;
 
@@ -21,7 +19,7 @@
 
         public Game(ulong timeElapsedPerTick = 1)
         {
-            this.Players = new Player[0];
+            this.Players = new Player.Player[0];
             this.TimeElapsedPerTick = new Number(timeElapsedPerTick);
 
             this.GenerateOrderData();
@@ -31,7 +29,7 @@
         {
             byte playerId = (byte)this.Players.Length;
             System.Array.Resize(ref this.Players, this.Players.Length + 1);
-            this.Players[playerId] = new Player(clientId);
+            this.Players[playerId] = new Player.Player(clientId);
             return playerId;
         }
         
@@ -71,15 +69,15 @@
             this.Id = stream.ReadByte();
             this.TickIndex = stream.ReadInt32();
             var playerCount = stream.ReadByte();
-            this.Players = new Player[playerCount];
+            this.Players = new Player.Player[playerCount];
             for (int index = 0; index < this.Players.Length; index++)
             {
-                this.Players[index] = new Player();
+                this.Players[index] = new Player.Player();
                 this.Players[index].Deserialize(stream);
             }
         }
 
-        public bool TryGetPlayer(byte clientId, out Player player)
+        public bool TryGetPlayer(byte clientId, out Player.Player player)
         {
             for (int index = 0; index < this.Players.Length; index++)
             {
