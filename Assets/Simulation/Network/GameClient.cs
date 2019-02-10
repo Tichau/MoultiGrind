@@ -21,9 +21,9 @@ namespace Simulation.Network
 
         private volatile uint nextOrderId = 1;
 
-        public GameClient()
+        public GameClient(string hostname, int port)
         {
-            this.client = new Client();
+            this.client = new Client(hostname, port);
             this.Writer = new BinaryWriter(this.WriteBuffer);
         }
 

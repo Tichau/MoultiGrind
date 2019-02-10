@@ -4,34 +4,26 @@ using Simulation.Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TestGameManager : MonoBehaviour
+public class SinglePlayerGameBootstraper : MonoBehaviour
 {
-    private GameServer server;
-    private GameClient client;
-
-    [SerializeField]
-    private uint durationBetweenTwoTicks = 1000;
     [SerializeField]
     private ulong timeElapsedPerTick = 1;
 
     private async void Start()
     {
-        this.server = new GameServer(this.durationBetweenTwoTicks);
-        this.server.Start();
+        GameManager.Instance.StartGameServer();
+        GameManager.Instance.ConnectToLocalServer();
 
-        this.client = new GameClient();
-        this.client.Start();
+        Debug.Assert(Simulation.Network.GameClient.Instance != null);
 
-        var gameInstanceId = await this.client.PostCreateGameOrder(this.timeElapsedPerTick);
-        await this.client.PostJoinGameOrder(gameInstanceId);
+        var gameInstanceId = await GameClient.Instance.PostCreateGameOrder(this.timeElapsedPerTick);
+        await GameClient.Instance.PostJoinGameOrder(gameInstanceId);
 
         SceneManager.LoadSceneAsync("Game", LoadSceneMode.Additive);
     }
 
     private void Update()
     {
-        this.client?.Update();
-
 #if UNITY_EDITOR
         if (GameClient.Instance.Game != null)
         {
@@ -57,11 +49,5 @@ public class TestGameManager : MonoBehaviour
             }
         }
 #endif
-    }
-
-    private void OnApplicationQuit()
-    {
-        this.client?.Stop();
-        this.server?.Stop();
     }
 }

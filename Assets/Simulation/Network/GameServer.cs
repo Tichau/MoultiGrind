@@ -19,10 +19,10 @@ namespace Simulation.Network
         /// Create a new instance of game server.
         /// </summary>
         /// <param name="durationBetweenTwoTicks">The duration between two game tick (in milliseconds).</param>
-        public GameServer(uint durationBetweenTwoTicks = 1000)
+        public GameServer(System.Net.IPAddress address, int port, TimeSpan clientConnectionCheckTimeout, uint durationBetweenTwoTicks = 1000)
         {
             this.durationBetweenTwoTicks = durationBetweenTwoTicks;
-            this.server = new Server();
+            this.server = new Server(address, port, clientConnectionCheckTimeout);
         }
 
         public int GameCount => this.hostedGames.Count;

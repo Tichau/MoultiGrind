@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c27fb0fcf222dfb4aa72061f708dce04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GameScene: Game
+  GameScene: MainMenu
 --- !u!1 &1569578510
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +221,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1569578510}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08b40edb22af46a49bf438c1fed27802, type: 3}
+  m_Script: {fileID: 11500000, guid: d46e856b67aff53499e0b728ef8ec800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  durationBetweenTwoTicks: 1000
+  networkPort: 7744
+  clientConnectionCheckTimeoutInSeconds: 30

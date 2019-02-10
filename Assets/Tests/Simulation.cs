@@ -32,13 +32,13 @@ public class SimulationTest
         Databases.Instance.RecipeDefinitions = new Simulation.Data.RecipeDefinition[0];
         Databases.Instance.TechnologyDefinitions = new Simulation.Data.TechnologyDefinition[0];
 
-        using (GameServer server = new GameServer())
+        using (GameServer server = new GameServer(System.Net.IPAddress.Parse("127.0.0.1"), 8052, TimeSpan.FromSeconds(30)))
         {
             server.Start();
-            Thread.Sleep(100);
+            Thread.Sleep(50);
 
             Assert.AreEqual(0, server.GameCount);
-            using (GameClient client = new GameClient())
+            using (GameClient client = new GameClient("localhost", 8052))
             {
                 client.Start();
 
