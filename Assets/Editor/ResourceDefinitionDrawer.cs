@@ -1,8 +1,9 @@
 ﻿using System;
+using Simulation;
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(ResourceDefinition))]
+[CustomPropertyDrawer(typeof(Simulation.Data.ResourceDefinition))]
 public class ResourceDefinitionDrawer : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

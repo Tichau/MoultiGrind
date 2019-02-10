@@ -1,4 +1,7 @@
-﻿namespace UI
+﻿using Simulation;
+using Simulation.Network;
+
+namespace UI
 {
     using System;
     using System.Collections;
@@ -7,13 +10,12 @@
 
     public class TechnologyList : UIList<TechnologyLine>
     {
-        private Predicate<KeyValuePair<TechnologyDefinition, ResearchStatus>> displayPredicate = def => def.Value == ResearchStatus.Available || def.Value == ResearchStatus.InProgress;
+        private Predicate<KeyValuePair<Simulation.Data.TechnologyDefinition, ResearchStatus>> displayPredicate = def => def.Value == ResearchStatus.Available || def.Value == ResearchStatus.InProgress;
 
         private void Update()
         {
             // Display factories
-            var player = Game.Instance.Players[0];
-            this.DisplayList(player.TechnologyStatesByDefinition, this.displayPredicate, (def, ui) => ui.Definition = def.Key);
+            this.DisplayList(GameClient.Instance.ActivePlayer.TechnologyStatesByDefinition, this.displayPredicate, (def, ui) => ui.Definition = def.Key);
         }
     }
 }

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5516ee044ed414647a0f6ae54e9635cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 3045df0a01e0794429fa5ceb5ee9d460, type: 3}
   m_Name: Automation
   m_EditorClassIdentifier: 
   Description: Key technology for automatic mass production.

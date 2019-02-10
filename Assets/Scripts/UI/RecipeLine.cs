@@ -1,9 +1,13 @@
 ﻿namespace UI
 {
+    using System;
+    using System.Linq;
+
     using UnityEngine;
     using UnityEngine.UI;
-
-    using System.Linq;
+    
+    using Simulation;
+    using Simulation.Network;
 
     public class RecipeLine : MonoBehaviour
     {
@@ -18,10 +22,9 @@
         public Text CraftRecipeCount;
         public Text CraftRecipeProgress;
 
-        private RecipeDefinition definition;
-        private global::Player player;
+        private Simulation.Data.RecipeDefinition definition;
 
-        public RecipeDefinition Definition
+        public Simulation.Data.RecipeDefinition Definition
         {
             get
             {
@@ -36,19 +39,40 @@
             }
         }
 
-        public void CraftRecipe()
+        public async void CraftRecipe()
         {
-            this.player.CraftRecipe(this.Definition);
+            try
+            {
+                await GameClient.Instance.ActivePlayer.PostCraftRecipeOrder(this.Definition);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning(exception.Message);
+            }
         }
 
-        public void CreateFactory()
+        public async void CreateFactory()
         {
-            this.player.CreateFactory(this.Definition);
+            try
+            {
+                await GameClient.Instance.ActivePlayer.PostCreateFactoryOrder(this.Definition);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning(exception.Message);
+            }
         }
 
-        public void DestroyFactory()
+        public async void DestroyFactory()
         {
-            this.player.DestroyFactory(this.Definition);
+            try
+            {
+                await GameClient.Instance.ActivePlayer.PostDestroyFactoryOrder(this.Definition);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogWarning(exception.Message);
+            }
         }
 
         private void Awake()
@@ -65,16 +89,15 @@
 
         private void Start()
         {
-            this.player = Game.Instance.Players[0];
         }
 
         private void Update()
         {
-            this.CreateFactoryButton.interactable = player.CanCreateFactory(this.Definition);
-            this.DestroyFactoryButton.interactable = player.CanDestroyFactory(this.Definition);
-            this.CraftRecipeButton.interactable = player.CanCraftRecipe(this.Definition);
+            this.CreateFactoryButton.interactable = GameClient.Instance.ActivePlayer.CanCreateFactory(this.Definition);
+            this.DestroyFactoryButton.interactable = GameClient.Instance.ActivePlayer.CanDestroyFactory(this.Definition);
+            this.CraftRecipeButton.interactable = GameClient.Instance.ActivePlayer.CanCraftRecipe(this.Definition);
 
-            var factory = this.player.Factories.Find(match => match.Definition == this.definition);
+            var factory = GameClient.Instance.ActivePlayer.Factories.Find(match => match.Definition == this.definition);
             if (factory != null)
             {
                 this.FactoryCount.text = factory.Count.ToString();
@@ -86,16 +109,16 @@
                 this.FactoryProductivity.text = string.Empty;
             }
 
-            var craftTaskIndex = this.player.ConstructionQueue.FindIndex(match => match.Definition == definition);
+            var craftTaskIndex = GameClient.Instance.ActivePlayer.ConstructionQueue.FindIndex(match => match.Definition == definition);
             if (craftTaskIndex >= 0)
             {
                 bool isInProgress = craftTaskIndex == 0;
-                var count = this.player.ConstructionQueue.Count(match => match.Definition == definition);
+                var count = GameClient.Instance.ActivePlayer.ConstructionQueue.Count(match => match.Definition == definition);
 
                 if (isInProgress)
                 {
                     this.CraftRecipeCount.text = count > 1 ? $"{count}x" : string.Empty;
-                    this.CraftRecipeProgress.text = ((float)this.player.ConstructionQueue[craftTaskIndex].Progress).ToString("P0");
+                    this.CraftRecipeProgress.text = ((float)GameClient.Instance.ActivePlayer.ConstructionQueue[craftTaskIndex].Progress).ToString("P0");
                 }
                 else
                 {

@@ -1,4 +1,7 @@
-﻿namespace UI
+﻿using Simulation;
+using Simulation.Network;
+
+namespace UI
 {
     using UnityEngine;
     using UnityEngine.UI;
@@ -8,9 +11,9 @@
         public Text Name;
         public Button ResearchButton;
 
-        private TechnologyDefinition definition;
+        private Simulation.Data.TechnologyDefinition definition;
 
-        public TechnologyDefinition Definition
+        public Simulation.Data.TechnologyDefinition Definition
         {
             get
             {
@@ -27,7 +30,7 @@
 
         public void ResearchTechnology()
         {
-            Game.Instance.Players[0].ResearchTechnology(this.Definition);
+            GameClient.Instance.ActivePlayer.PostResearchTechnologyOrder(this.Definition);
         }
         
         private void Awake()
@@ -38,7 +41,7 @@
 
         private void Update()
         {
-            this.ResearchButton.interactable = Game.Instance.Players[0].CanResearchTechnology(this.Definition);
+            this.ResearchButton.interactable = GameClient.Instance.ActivePlayer.CanResearchTechnology(this.Definition);
         }
     }
 }

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6546fc489c144fe6b7288e0a3394bd70, type: 3}
+  m_Script: {fileID: 11500000, guid: fd154218a6fc3e743af04b5fd9a73189, type: 3}
   m_Name: Copper cable
   m_EditorClassIdentifier: 
   Description: 

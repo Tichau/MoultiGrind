@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.ExceptionServices;
+using Simulation;
+using Simulation.Network;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -87,7 +89,7 @@ namespace UI
                             break;
                         }
 
-                        if (tooltipInteractible.Data is RecipeDefinition recipeDefinition)
+                        if (tooltipInteractible.Data is Simulation.Data.RecipeDefinition recipeDefinition)
                         {
                             this.recipeTooltip.GetComponent<RectTransform>().anchoredPosition = position;
                             this.DisplayRecipeTooltip(recipeDefinition);
@@ -95,7 +97,7 @@ namespace UI
                             break;
                         }
 
-                        if (tooltipInteractible.Data is TechnologyDefinition technologyDefinition)
+                        if (tooltipInteractible.Data is Simulation.Data.TechnologyDefinition technologyDefinition)
                         {
                             this.technologyTooltip.GetComponent<RectTransform>().anchoredPosition = position;
                             this.DisplayTechnologyTooltip(technologyDefinition);
@@ -114,7 +116,7 @@ namespace UI
             this.technologyTooltip.gameObject.SetActive(displayTechnologyTooltip);
         }
 
-        private void DisplayTechnologyTooltip(TechnologyDefinition technologyDefinition)
+        private void DisplayTechnologyTooltip(Simulation.Data.TechnologyDefinition technologyDefinition)
         {
             const int titleHeight = 26;
             const int lineHeight = 20;
@@ -154,7 +156,7 @@ namespace UI
             const int margin = 5;
             const int marginCount = 2;
 
-            var resource = Game.Instance.Players[0].Resources[(int) resourceType];
+            var resource = GameClient.Instance.ActivePlayer.Resources[(int) resourceType];
 
             if (resource.NetOperations.Count == 0)
             {
@@ -168,7 +170,7 @@ namespace UI
             return true;
         }
 
-        private void DisplayRecipeTooltip(RecipeDefinition recipeDefinition)
+        private void DisplayRecipeTooltip(Simulation.Data.RecipeDefinition recipeDefinition)
         {
             const int titleHeight = 26;
             const int lineHeight = 20;
