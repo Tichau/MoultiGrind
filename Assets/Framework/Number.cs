@@ -1,4 +1,6 @@
-﻿namespace Framework
+﻿using System.IO;
+
+namespace Framework
 {
     using System;
     using System.Numerics;
@@ -12,7 +14,7 @@
 
         private const int PrecisionFactor = 1000;
 
-        private readonly BigInteger fixedPoint;
+        private BigInteger fixedPoint;
 
         public Number(float number)
         {
@@ -256,6 +258,19 @@
             }
 
             return $"{stringValue}{Abbreviation(exponent)}";
+        }
+
+        public void Serialize(BinaryWriter stream)
+        {
+            var byteArray = this.fixedPoint.ToByteArray();
+            stream.Write(byteArray.Length);
+            stream.Write(byteArray);
+        }
+
+        public void Deserialize(BinaryReader stream)
+        {
+            var count = stream.ReadInt32();
+            this.fixedPoint = new BigInteger(stream.ReadBytes(count));
         }
 
         private string Abbreviation(Exponent exponent)

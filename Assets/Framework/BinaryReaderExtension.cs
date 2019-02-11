@@ -1,9 +1,17 @@
-﻿namespace Framework.Network
-{
-    using System.IO;
+﻿using System.IO;
+using Framework.Network;
 
+namespace Framework
+{
     public static class BinaryReaderExtension
     {
+        public static Number ReadNumber(this BinaryReader stream)
+        {
+            Number number = new Number();
+            number.Deserialize(stream);
+            return number;
+        }
+
         public static MessageHeader ReadHeader(this BinaryReader stream)
         {
             if (stream.BaseStream.Length < 3)

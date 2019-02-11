@@ -1,10 +1,16 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using Framework.Network;
 
-namespace Framework.Network
+namespace Framework
 {
     public static class BinaryWriterExtension
     {
+        public static void Write(this BinaryWriter stream, Number number)
+        {
+            number.Serialize(stream);
+        }
+
         public static void WriteHeader(this BinaryWriter stream, MessageHeader header)
         {
             stream.Write(header.Size);
