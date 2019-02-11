@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Runtime.CompilerServices;
 using Simulation;
 using Simulation.Network;
 using UnityEngine;
@@ -28,9 +30,14 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
-    public void StartGameServer()
+    public void StartGameServer(IPAddress address)
     {
-        this.server = new GameServer(System.Net.IPAddress.Parse("127.0.0.1"), this.networkPort, System.TimeSpan.FromSeconds(this.clientConnectionCheckTimeoutInSeconds), this.durationBetweenTwoTicks);
+        this.StartGameServer(address, this.networkPort);
+    }
+
+    public void StartGameServer(IPAddress address, int port)
+    {
+        this.server = new GameServer(address, port, System.TimeSpan.FromSeconds(this.clientConnectionCheckTimeoutInSeconds), this.durationBetweenTwoTicks);
         this.server.Start();
     }
 
@@ -38,6 +45,17 @@ public class GameManager : MonoBehaviour
     {
         this.client = new GameClient("localhost", this.networkPort);
         this.client.Start();
+    }
+
+    public void Quit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBPLAYER
+            Application.OpenURL(webplayerQuitURL);
+#else
+            Application.Quit();
+#endif
     }
 
     private void Update()

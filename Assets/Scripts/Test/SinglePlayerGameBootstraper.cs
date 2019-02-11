@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using Simulation;
 using Simulation.Network;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class SinglePlayerGameBootstraper : MonoBehaviour
 
     private async void Start()
     {
-        GameManager.Instance.StartGameServer();
+        GameManager.Instance.StartGameServer(IPAddress.Parse("127.0.0.1"));
         GameManager.Instance.ConnectToLocalServer();
 
         Debug.Assert(Simulation.Network.GameClient.Instance != null);
