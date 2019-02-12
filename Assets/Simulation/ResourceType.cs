@@ -2,6 +2,8 @@
 {
     public enum ResourceType
     {
+        None,
+
         CopperOre,
         CopperPlate,
         CopperCable,

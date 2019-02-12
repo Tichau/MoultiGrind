@@ -1,10 +1,18 @@
 ﻿using System.IO;
-using Framework.Network;
+using Simulation.Data;
 
-namespace Simulation.Network
+namespace Simulation
 {
     public static class BinaryReaderExtension
     {
+        public static T ReadReference<T>(this BinaryReader stream)
+            where T : IDatabaseElement
+        {
+            var id = stream.ReadUInt32();
+            Databases.Instance.TryGet(id, out T definition);
+            return definition;
+        }
+
         public static void ReadCreateGameOrder(this BinaryReader stream, out byte gameInstanceId, out ulong timeElapsedPerTick)
         {
             gameInstanceId = stream.ReadByte();

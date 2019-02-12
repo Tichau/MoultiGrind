@@ -1,8 +1,9 @@
-﻿using Framework;
+﻿using System.IO;
+using Framework;
 
 namespace Simulation
 {
-    public class Factory
+    public class Factory : ISerializable
     {
         public Simulation.Data.RecipeDefinition Definition;
 
@@ -12,6 +13,11 @@ namespace Simulation
         public Factory(Simulation.Data.RecipeDefinition definition)
         {
             this.Definition = definition;
+        }
+
+        // Used for serialization.
+        public Factory()
+        {
         }
 
         public override string ToString()
@@ -25,6 +31,20 @@ namespace Simulation
             }
 
             return name;
+        }
+
+        public void Serialize(BinaryWriter stream)
+        {
+            stream.WriteReference(this.Definition);
+            stream.Write(this.Productivity);
+            stream.Write(this.Count);
+        }
+
+        public void Deserialize(BinaryReader stream)
+        {
+            this.Definition = stream.ReadReference<Data.RecipeDefinition>();
+            this.Productivity = stream.ReadNumber();
+            this.Count = stream.ReadInt32();
         }
     }
 }

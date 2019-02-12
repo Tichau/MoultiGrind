@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Simulation.Game
 {
-    public partial class Game
+    public partial class Game : ISerializable
     {
         public Number TimeElapsedPerTick;
         public Player.Player[] Players;
@@ -57,24 +57,16 @@ namespace Simulation.Game
         {
             stream.Write(this.Id);
             stream.Write(this.TickIndex);
-            stream.Write((byte)this.Players.Length);
-            for (int index = 0; index < this.Players.Length; index++)
-            {
-                this.Players[index].Serialize(stream);
-            }
+            stream.Write(this.TimeElapsedPerTick);
+            stream.Write(this.Players);
         }
 
         public void Deserialize(BinaryReader stream)
         {
             this.Id = stream.ReadByte();
             this.TickIndex = stream.ReadInt32();
-            var playerCount = stream.ReadByte();
-            this.Players = new Player.Player[playerCount];
-            for (int index = 0; index < this.Players.Length; index++)
-            {
-                this.Players[index] = new Player.Player();
-                this.Players[index].Deserialize(stream);
-            }
+            this.TimeElapsedPerTick = stream.ReadNumber();
+            this.Players = stream.ReadArray<Player.Player>();
         }
 
         public bool TryGetPlayer(byte clientId, out Player.Player player)

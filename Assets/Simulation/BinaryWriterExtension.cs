@@ -1,10 +1,15 @@
 ﻿using System.IO;
-using Framework.Network;
 
-namespace Simulation.Network
+namespace Simulation
 {
     public static class BinaryWriterExtension
     {
+        public static void WriteReference<T>(this BinaryWriter stream, T definition)
+            where T : IDatabaseElement
+        {
+            stream.Write(definition.Id);
+        }
+
         public static void WriteCreateGameOrder(this BinaryWriter stream, byte gameInstanceId, ulong timeElapsedPerTick)
         {
             stream.Write(gameInstanceId);

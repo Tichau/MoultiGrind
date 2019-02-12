@@ -1,11 +1,13 @@
-﻿using Framework;
+﻿using System.Diagnostics;
+using System.IO;
+using Framework;
 
 namespace Simulation
 {
     using System.Collections.Generic;
 
     [System.Serializable]
-    public struct Resource
+    public struct Resource : ISerializable
     {
         public ResourceType Name;
         public Number Amount;
@@ -50,6 +52,23 @@ namespace Simulation
             }
 
             this.NetOperations.Add(new Operation(name, number));
+        }
+
+        public void Serialize(BinaryWriter stream)
+        {
+            stream.Write(this.Name.ToString());
+            stream.Write(this.Amount);
+        }
+
+        public void Deserialize(BinaryReader stream)
+        {
+            string resourceName = stream.ReadString();
+            if (!System.Enum.TryParse(resourceName, out this.Name))
+            {
+                this.Name = ResourceType.None;
+            }
+
+            this.Amount = stream.ReadNumber();
         }
     }
 

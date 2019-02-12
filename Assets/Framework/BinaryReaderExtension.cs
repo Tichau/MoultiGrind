@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Framework.Network;
 
 namespace Framework
@@ -10,6 +11,35 @@ namespace Framework
             Number number = new Number();
             number.Deserialize(stream);
             return number;
+        }
+
+        public static T[] ReadArray<T>(this BinaryReader stream)
+            where T : ISerializable, new()
+        {
+            var count = stream.ReadUInt16();
+            var array = new T[count];
+            for (int index = 0; index < count; index++)
+            {
+                array[index] = new T();
+                array[index].Deserialize(stream);
+            }
+
+            return array;
+        }
+
+        public static List<T> ReadList<T>(this BinaryReader stream)
+            where T : ISerializable, new()
+        {
+            var count = stream.ReadUInt16();
+            var list = new List<T>(count);
+            for (int index = 0; index < count; index++)
+            {
+                var element = new T();
+                element.Deserialize(stream);
+                list[index] = element;
+            }
+
+            return list;
         }
 
         public static MessageHeader ReadHeader(this BinaryReader stream)

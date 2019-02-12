@@ -8,7 +8,7 @@ namespace Simulation.Player
     {
         public bool CanResearchTechnology(Simulation.Data.TechnologyDefinition definition)
         {
-            if (this.TechnologyStatesByDefinition[definition] != ResearchStatus.Available)
+            if (this.TechnologyStatusById[definition.Id].Status != ResearchStatus.Available)
             {
                 return false;
             }
@@ -57,7 +57,7 @@ namespace Simulation.Player
                 this.Resources[(int)resource.Name].Amount -= resource.Amount;
             }
 
-            this.TechnologyStatesByDefinition[definition] = ResearchStatus.Done;
+            this.TechnologyStatusById[definition.Id].Status = ResearchStatus.Done;
         }
 
         [OrderServerPass(OrderType.ResearchTechnology)]

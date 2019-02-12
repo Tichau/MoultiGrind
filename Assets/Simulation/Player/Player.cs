@@ -8,13 +8,12 @@ using UnityEngine;
 
 namespace Simulation.Player
 {
-    public partial class Player
+    public partial class Player : ISerializable
     {
         public Resource[] Resources;
         public List<Factory> Factories = new List<Factory>();
         public List<CraftTask> ConstructionQueue = new List<CraftTask>();
-
-        public Dictionary<Simulation.Data.TechnologyDefinition, ResearchStatus> TechnologyStatesByDefinition = new Dictionary<Simulation.Data.TechnologyDefinition, ResearchStatus>();
+        public TechnologyStatus[] TechnologyStatusById;
 
         internal byte ClientId;
         internal OrderData[] OrderById;
@@ -32,13 +31,18 @@ namespace Simulation.Player
                 this.Resources[(int) enumValue] = new Resource((ResourceType) enumValue, Number.Zero);
             }
 
+            this.TechnologyStatusById = new TechnologyStatus[Databases.Instance.TechnologyDefinitions.Length];
             foreach (var technology in Databases.Instance.TechnologyDefinitions)
             {
-                this.TechnologyStatesByDefinition.Add(technology, ResearchStatus.Available);
+                this.TechnologyStatusById[technology.Id] = new TechnologyStatus()
+                {
+                    Definition = technology,
+                    Status = ResearchStatus.Available,
+                };
             }
         }
 
-        internal Player() : this(255)
+        public Player() : this(255)
         {
         }
 
@@ -141,15 +145,15 @@ namespace Simulation.Player
             throw new NotImplementedException();
         }
 
-        public bool IsRecipeAvailable(Simulation.Data.RecipeDefinition definition)
+        public bool IsRecipeAvailable(Data.RecipeDefinition definition)
         {
-            foreach (var technology in TechnologyStatesByDefinition)
+            foreach (var technology in Databases.Instance.TechnologyDefinitions)
             {
-                foreach (var unlock in technology.Key.Unlocks)
+                foreach (var unlock in technology.Unlocks)
                 {
                     if (unlock == definition)
                     {
-                        return technology.Value == ResearchStatus.Done;
+                        return this.TechnologyStatusById[technology.Id].Status == ResearchStatus.Done;
                     }
                 }
             }
@@ -160,11 +164,57 @@ namespace Simulation.Player
         public void Serialize(BinaryWriter stream)
         {
             stream.Write(this.ClientId);
+            stream.Write(this.Resources);
+            stream.Write(this.Factories);
+            stream.Write(this.ConstructionQueue);
+            stream.Write(this.TechnologyStatusById);
         }
 
         public void Deserialize(BinaryReader stream)
         {
             this.ClientId = stream.ReadByte();
+
+            var deserializedResources = stream.ReadArray<Resource>();
+            for (int index = 0; index < deserializedResources.Length; index++)
+            {
+                if (deserializedResources[index].Name == ResourceType.None)
+                {
+                    // Ignore deprecated resource.
+                    continue;
+                }
+
+                this.Resources[(int)deserializedResources[index].Name].Amount = deserializedResources[index].Amount;
+            }
+
+            this.Factories = stream.ReadList<Factory>();
+            for (int index = this.Factories.Count - 1; index >= 0; index--)
+            {
+                if (this.Factories[index].Definition == null)
+                {
+                    // Deprecated element. Remove it.
+                    this.Factories.RemoveAt(index);
+                }
+            }
+
+            this.ConstructionQueue = stream.ReadList<CraftTask>();
+            for (int index = this.ConstructionQueue.Count - 1; index >= 0; index--)
+            {
+                if (this.ConstructionQueue[index].Definition == null)
+                {
+                    // Deprecated element. Remove it.
+                    this.ConstructionQueue.RemoveAt(index);
+                }
+            }
+
+            var technologyStatuses = stream.ReadArray<TechnologyStatus>();
+            for (int index = 0; index < technologyStatuses.Length; index++)
+            {
+                var status = technologyStatuses[index];
+                if (status.Definition != null)
+                {
+                    this.TechnologyStatusById[status.Definition.Id].Status = status.Status;
+                }
+            }
         }
 
         private void GenerateOrderData()

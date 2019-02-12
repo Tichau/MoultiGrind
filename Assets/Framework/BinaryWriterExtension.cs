@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Framework.Network;
 
@@ -9,6 +10,26 @@ namespace Framework
         public static void Write(this BinaryWriter stream, Number number)
         {
             number.Serialize(stream);
+        }
+
+        public static void Write<T>(this BinaryWriter stream, T[] array)
+            where T : ISerializable
+        {
+            stream.Write((ushort)array.Length);
+            for (int index = 0; index < array.Length; index++)
+            {
+                array[index].Serialize(stream);
+            }
+        }
+
+        public static void Write<T>(this BinaryWriter stream, List<T> list)
+            where T : ISerializable
+        {
+            stream.Write((ushort)list.Count);
+            for (int index = 0; index < list.Count; index++)
+            {
+                list[index].Serialize(stream);
+            }
         }
 
         public static void WriteHeader(this BinaryWriter stream, MessageHeader header)
