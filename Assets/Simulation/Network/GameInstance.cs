@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Simulation.Network;
 using UnityEngine;
 
 namespace Simulation
@@ -46,11 +47,6 @@ namespace Simulation
             }
 
             Debug.Log($"Game {this.Id} stopped correctly.");
-        }
-
-        public byte Join(byte clientId)
-        {
-            return this.Game.RegisterPlayer(clientId);
         }
 
         private void GameLoop()

@@ -37,10 +37,10 @@ namespace Simulation.Network
             return gameInstanceId;
         }
 
-        public async System.Threading.Tasks.Task PostJoinGameOrder(byte gameInstanceId)
+        public async System.Threading.Tasks.Task PostJoinGameOrder(byte gameInstanceId, byte playerId = GameClient.InvalidPlayerId)
         {
             var header = this.WriteOrderHeader(OrderType.JoinGame);
-            this.Writer.WriteJoinGameOrder(gameInstanceId, 0, 0, 0, 0, null);
+            this.Writer.WriteJoinGameOrder(gameInstanceId, 0, 0, 0, playerId, null);
 
             header = await this.PostOrder(header);
 

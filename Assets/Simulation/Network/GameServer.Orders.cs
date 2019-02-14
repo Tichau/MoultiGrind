@@ -1,4 +1,7 @@
-﻿namespace Simulation.Network
+﻿using Framework.Network;
+using UnityEngine;
+
+namespace Simulation.Network
 {
     using System.IO;
 
@@ -26,23 +29,54 @@
         {
             dataFromClient.ReadJoinGameOrder(out var gameInstanceId, out var clientId, out var timeElapsedPerTick, out var durationBetweenTwoTicks, out var playerId, out var gameSave);
 
-            GameInstance game = null;
+            GameInstance instance = null;
             for (int index = 0; index < this.hostedGames.Count; index++)
             {
                 if (this.hostedGames[index].Id == gameInstanceId)
                 {
-                    game = this.hostedGames[index];
+                    instance = this.hostedGames[index];
                 }
             }
 
-            if (game == null)
+            if (instance == null)
             {
+                // Game instance not found.
+                Debug.LogWarning($"Can't retrieve game {gameInstanceId}.");
                 return OrderStatus.Refused;
             }
 
-            playerId = game.Join(clientId);
+            if (playerId != GameServer.InvalidPlayerId)
+            {
+                // A specific player is requested.
 
-            dataToClient.WriteJoinGameOrder(gameInstanceId, clientId, (ulong)game.Game.TimeElapsedPerTick, (ulong)game.DurationBetweenTwoTicks, playerId, game.Game);
+                if (playerId >= instance.Game.Players.Length)
+                {
+                    // Player doesn't exist.
+                    Debug.LogWarning($"Player {playerId} does not exist in game {gameInstanceId}.");
+                    return OrderStatus.Refused;
+                }
+
+                var player = instance.Game.Players[playerId];
+                if (player.ClientId != Server.InvalidClientId)
+                {
+                    // Player is already controlled by another client.
+                    Debug.LogWarning($"Player {playerId} is already controlled by another client in game {gameInstanceId}.");
+                    return OrderStatus.Refused;
+                }
+
+                player.ClientId = clientId;
+            }
+            else
+            {
+                // Create a new player.
+                playerId = (byte)instance.Game.Players.Length;
+                System.Array.Resize(ref instance.Game.Players, instance.Game.Players.Length + 1);
+                instance.Game.Players[playerId] = new Player.Player(clientId);
+            }
+
+            Debug.Log($"Client {clientId} join game {gameInstanceId} on player {playerId} slot.");
+
+            dataToClient.WriteJoinGameOrder(gameInstanceId, clientId, (ulong)instance.Game.TimeElapsedPerTick, (ulong)instance.DurationBetweenTwoTicks, playerId, instance.Game);
 
             return OrderStatus.Validated;
         }

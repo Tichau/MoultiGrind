@@ -39,7 +39,11 @@ namespace Framework.Network
 
         public event MessageReceivedDelegate MessageReceived;
 
+        public event ClientDisconnectedDelegate ClientDisconnected;
+
         public delegate void MessageReceivedDelegate(byte clientId, MessageHeader header, BinaryReader buffer);
+
+        public delegate void ClientDisconnectedDelegate(byte clientId);
 
         public Server() : this(IPAddress.Parse("127.0.0.1"), 8052, TimeSpan.FromSeconds(30))
         {
@@ -200,6 +204,9 @@ namespace Framework.Network
                                 client.Stream.Close();
                                 client.TcpClient.Close();
                                 this.clients.RemoveAt(clientIndex);
+
+                                this.ClientDisconnected?.Invoke(client.Id);
+
                                 Debug.Log($"[Server] Client disconnected. {this.ClientCount} client(s) remain connected.");
                                 continue;
                             }

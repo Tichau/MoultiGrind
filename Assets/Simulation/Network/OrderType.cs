@@ -6,6 +6,7 @@
 
         CreateGame,
         JoinGame,
+        LeaveGame,
 
         ChangeGameSpeed,
 

@@ -8,12 +8,16 @@ namespace Simulation.Network
 {
     public partial class GameServer : GameInterface
     {
+        public static GameServer Instance;
+
         private readonly List<GameInstance> hostedGames = new List<GameInstance>();
         private readonly Server server;
         
         private readonly uint durationBetweenTwoTicks;
 
         private byte nextGameId = 1;
+
+        private BinaryReader writeBufferReader;
 
         /// <summary>
         /// Create a new instance of game server.
@@ -31,8 +35,14 @@ namespace Simulation.Network
         {
             base.Start();
 
+            this.writeBufferReader = new BinaryReader(this.WriteBuffer);
+
             this.server.Start();
             this.server.MessageReceived += this.OnMessageReceived;
+            this.server.ClientDisconnected += this.OnClientDisconnected;
+
+            Debug.Assert(GameServer.Instance == null);
+            GameServer.Instance = this;
         }
 
         public override void Stop()
@@ -43,8 +53,14 @@ namespace Simulation.Network
                 this.hostedGames[index].Stop();
             }
 
+            this.writeBufferReader.Dispose();
+            this.writeBufferReader = null;
+
+            this.server.ClientDisconnected -= this.OnClientDisconnected;
             this.server.MessageReceived -= this.OnMessageReceived;
             this.server.Stop();
+
+            GameServer.Instance = null;
 
             base.Stop();
         }
@@ -52,6 +68,20 @@ namespace Simulation.Network
         public override void Dispose()
         {
             this.Stop();
+        }
+
+        internal OrderHeader WriteOrderHeader(OrderType type, byte gameInstanceId)
+        {
+            this.WriteBuffer.Position = 0;
+            var header = new OrderHeader(0, type, gameInstanceId, Server.InvalidClientId);
+            header.Write(this.Writer);
+            return header;
+        }
+
+        internal void PostServerOrder(ref OrderHeader header)
+        {
+            this.WriteBuffer.Seek(OrderHeader.SizeOf, SeekOrigin.Begin);
+            this.ProcessOrder(Server.InvalidClientId, this.writeBufferReader, ref header);
         }
 
         protected override bool TryGetGame(byte gameId, out Simulation.Game.Game game)
@@ -79,56 +109,85 @@ namespace Simulation.Network
 
                     Debug.Log($"[GameServer] {orderHeader.Type} order received from client {clientId}.");
 
-                    if (orderHeader.Type == OrderType.Invalid)
-                    {
-                        Debug.LogWarning("Invalid order.");
-                        return;
-                    }
-                    
-                    if (!this.TryGetOrderData(orderHeader, out var orderData))
-                    {
-                        Debug.LogWarning($"No order data found for order {orderHeader.Type}.");
-                        return;
-                    }
-
-                    Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");
-                    Debug.Assert(orderData.ServerPass != null, $"No server pass for order {orderData.Type}.");
-
-                    this.WriteBuffer.Position = 0;
-                    orderHeader.Write(this.Writer);
-                    orderHeader.Status = orderData.ServerPass.Invoke(buffer, this.Writer);
-                    Debug.Assert(this.WriteBuffer.Position - MessageHeader.SizeOf >= 0);
-                    orderHeader.BaseHeader.Size = (ushort)(this.WriteBuffer.Position - MessageHeader.SizeOf);
-
-                    // Update order size and status.
-                    this.WriteBuffer.Position = 0;
-                    this.Writer.Write(orderHeader.BaseHeader.Size);
-                    this.WriteBuffer.Position = OrderHeader.StatusPosition;
-                    this.Writer.Write((byte)orderHeader.Status);
-
-                    switch (orderData.Context)
-                    {
-                        case OrderContext.Invalid:
-                            Debug.LogWarning("Invalid order context.");
-                            break;
-
-                        case OrderContext.Server:
-                            this.server.SendMessage(clientId, this.WriteBuffer);
-                            break;
-
-                        case OrderContext.Game:
-                        case OrderContext.Player:
-                            this.BroadcastOrder(orderHeader, this.WriteBuffer);
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-
+                    this.ProcessOrder(clientId, buffer, ref orderHeader);
                     break;
 
                 default:
                     break;
+            }
+        }
+
+        private void ProcessOrder(byte clientId, BinaryReader buffer, ref OrderHeader orderHeader)
+        {
+            if (orderHeader.Type == OrderType.Invalid)
+            {
+                Debug.LogWarning("Invalid order.");
+                return;
+            }
+
+            if (!this.TryGetOrderData(orderHeader, out var orderData))
+            {
+                Debug.LogWarning($"No order data found for order {orderHeader.Type}.");
+                return;
+            }
+
+            Debug.Assert(orderData.Context != OrderContext.Invalid, $"No server pass context for order {orderData.Type}.");
+            Debug.Assert(orderData.ServerPass != null, $"No server pass for order {orderData.Type}.");
+
+            this.WriteBuffer.Position = 0;
+            orderHeader.Write(this.Writer);
+            orderHeader.Status = orderData.ServerPass.Invoke(buffer, this.Writer);
+            Debug.Assert(this.WriteBuffer.Position - MessageHeader.SizeOf >= 0);
+            orderHeader.BaseHeader.Size = (ushort) (this.WriteBuffer.Position - MessageHeader.SizeOf);
+
+            // Update order size and status.
+            this.WriteBuffer.Position = 0;
+            this.Writer.Write(orderHeader.BaseHeader.Size);
+            this.WriteBuffer.Position = OrderHeader.StatusPosition;
+            this.Writer.Write((byte) orderHeader.Status);
+
+            switch (orderData.Context)
+            {
+                case OrderContext.Invalid:
+                    Debug.LogWarning("Invalid order context.");
+                    break;
+
+                case OrderContext.Server:
+                    this.server.SendMessage(clientId, this.WriteBuffer);
+                    break;
+
+                case OrderContext.Game:
+                case OrderContext.Player:
+                    this.BroadcastOrder(orderHeader, this.WriteBuffer);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void OnClientDisconnected(byte clientId)
+        {
+            for (int index = 0; index < this.hostedGames.Count; index++)
+            {
+                var game = this.hostedGames[index].Game;
+                for (byte playerId = 0; playerId < game.Players.Length; playerId++)
+                {
+                    var player = game.Players[playerId];
+                    if (player.ClientId == clientId)
+                    {
+                        try
+                        {
+                            game.PostLeaveGameOrder(playerId);
+                        }
+                        catch (Exception exception)
+                        {
+                            Debug.LogException(exception);
+                        }
+
+                        return;
+                    }
+                }
             }
         }
 

@@ -24,14 +24,6 @@ namespace Simulation.Game
 
             this.GenerateOrderData();
         }
-
-        public byte RegisterPlayer(byte clientId)
-        {
-            byte playerId = (byte)this.Players.Length;
-            System.Array.Resize(ref this.Players, this.Players.Length + 1);
-            this.Players[playerId] = new Player.Player(clientId);
-            return playerId;
-        }
         
         public void Tick()
         {

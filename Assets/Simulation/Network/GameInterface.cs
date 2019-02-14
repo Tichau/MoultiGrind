@@ -8,6 +8,7 @@ namespace Simulation.Network
     public abstract class GameInterface : IDisposable
     {
         public const byte InvalidGameId = 0;
+        public const byte InvalidPlayerId = 255;
 
         protected MemoryStream WriteBuffer = new MemoryStream();
         internal BinaryWriter Writer;
@@ -40,7 +41,7 @@ namespace Simulation.Network
 
         public abstract void Dispose();
 
-        protected abstract bool TryGetGame(byte gameId, out Simulation.Game.Game game);
+        protected abstract bool TryGetGame(byte gameId, out Game.Game game);
 
         protected bool TryGetOrderData(OrderHeader header, out OrderData orderData)
         {
