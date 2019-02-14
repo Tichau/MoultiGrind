@@ -9,9 +9,16 @@ namespace Simulation.Game
 {
     public partial class Game
     {
-        //// Leave game is a server order.
+        // There is no acknowledge for this task since the player is disconnected after leaving the game.
+        internal void PostLeaveGameOrderFromClient(byte playerId)
+        {
+            var header = GameClient.Instance.WriteOrderHeader(OrderType.LeaveGame, this.Id);
+            WriteLeaveGameOrder(GameClient.Instance.Writer, playerId);
 
-        internal void PostLeaveGameOrder(byte playerId)
+            var order = GameClient.Instance.PostOrder(header);
+        }
+
+        internal void PostLeaveGameOrderFromServer(byte playerId)
         {
             var header = GameServer.Instance.WriteOrderHeader(OrderType.LeaveGame, this.Id);
             WriteLeaveGameOrder(GameServer.Instance.Writer, playerId);

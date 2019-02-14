@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Framework.Network;
 using UnityEngine;
 
@@ -47,6 +48,8 @@ namespace Simulation.Network
 
         public override void Stop()
         {
+            this.Game?.PostLeaveGameOrderFromClient(this.PlayerId);
+
             GameClient.Instance = null;
 
             if (this.client.State == InterfaceState.Started)

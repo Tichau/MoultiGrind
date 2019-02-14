@@ -178,7 +178,7 @@ namespace Simulation.Network
                     {
                         try
                         {
-                            game.PostLeaveGameOrder(playerId);
+                            game.PostLeaveGameOrderFromServer(playerId);
                         }
                         catch (Exception exception)
                         {
