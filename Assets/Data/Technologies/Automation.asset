@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Description: Key technology for automatic mass production.
   Costs:
-  - Name: 6
+  - Name: 7
     fixedPointAmount: 10000
   Unlocks:
   - {fileID: 11400000, guid: be545fe4bedadb1408581433f28818de, type: 2}

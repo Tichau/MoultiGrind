@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Description: 
   Inputs:
-  - Name: 4
+  - Name: 5
     fixedPointAmount: 2000
   Outputs:
-  - Name: 5
+  - Name: 6
     fixedPointAmount: 1000
   fixedPointDuration: 500

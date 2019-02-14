@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Description: Used by labs for research.
   Inputs:
-  - Name: 1
+  - Name: 2
     fixedPointAmount: 1000
-  - Name: 5
+  - Name: 6
     fixedPointAmount: 1000
   Outputs:
-  - Name: 6
+  - Name: 7
     fixedPointAmount: 1000
   fixedPointDuration: 5000
