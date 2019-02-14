@@ -36,7 +36,7 @@ namespace Framework
             {
                 var element = new T();
                 element.Deserialize(stream);
-                list[index] = element;
+                list.Add(element);
             }
 
             return list;
