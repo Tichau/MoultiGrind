@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using Framework;
+using UnityEngine;
 
 namespace Simulation
 {
@@ -65,6 +65,7 @@ namespace Simulation
             string resourceName = stream.ReadString();
             if (!System.Enum.TryParse(resourceName, out this.Name))
             {
+                Debug.LogWarning($"Can't find resource {resourceName}.");
                 this.Name = ResourceType.None;
             }
 

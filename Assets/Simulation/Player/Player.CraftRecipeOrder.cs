@@ -6,7 +6,7 @@ namespace Simulation.Player
 {
     public partial class Player
     {
-        public bool CanCraftRecipe(Simulation.Data.RecipeDefinition definition)
+        public bool CanCraftRecipe(Data.RecipeDefinition definition)
         {
             bool resourcePrerequisites = true;
             foreach (var resource in definition.Inputs)
@@ -17,7 +17,7 @@ namespace Simulation.Player
             return resourcePrerequisites;
         }
 
-        public async Task PostCraftRecipeOrder(Simulation.Data.RecipeDefinition definition)
+        public async Task PostCraftRecipeOrder(Data.RecipeDefinition definition)
         {
             var header = GameClient.Instance.WriteOrderHeader(OrderType.CraftRecipe);
             WriteCraftRecipeOrder(GameClient.Instance.Writer, definition.Id);
@@ -40,7 +40,7 @@ namespace Simulation.Player
             recipeId = stream.ReadUInt32();
         }
 
-        private void ApplyCraftRecipeOrder(Simulation.Data.RecipeDefinition definition)
+        private void ApplyCraftRecipeOrder(Data.RecipeDefinition definition)
         {
             foreach (var resource in definition.Inputs)
             {
@@ -55,7 +55,7 @@ namespace Simulation.Player
         {
             ReadCraftRecipeOrder(dataFromClient, out var recipeId);
 
-            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
            
             if (!this.CanCraftRecipe(definition))
             {
@@ -74,7 +74,7 @@ namespace Simulation.Player
         {
             ReadCraftRecipeOrder(dataFromServer, out var recipeId);
 
-            Simulation.Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
+            Data.RecipeDefinition definition = Databases.Instance.RecipeDefinitions[recipeId];
 
             this.ApplyCraftRecipeOrder(definition);
         }
