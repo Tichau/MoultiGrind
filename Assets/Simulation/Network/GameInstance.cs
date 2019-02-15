@@ -2,6 +2,7 @@
 using System.Threading;
 using Simulation.Network;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Simulation
 {
@@ -27,7 +28,10 @@ namespace Simulation
             this.DurationBetweenTwoTicks = (int)durationBetweenTwoTicks;
             this.Game = new Game.Game(timeElapsedPerTick);
             this.Game.Id = id;
-            this.gameThread = new Thread(this.GameLoop);
+            this.gameThread = new Thread(this.GameLoop)
+            {
+                Name = $"Game {id} server thread",
+            };
         }
 
         public void Start()
@@ -51,12 +55,18 @@ namespace Simulation
 
         private void GameLoop()
         {
+            Profiler.BeginThreadProfiling("Game Instances", $"Game {this.Id}");
+
             while (!this.exit)
             {
+                Profiler.BeginSample("Tick");
                 this.Game.Tick();
+                Profiler.EndSample();
 
                 Thread.Sleep(this.DurationBetweenTwoTicks);
             }
+
+            Profiler.EndThreadProfiling();
         }
     }
 }

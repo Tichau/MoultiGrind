@@ -58,6 +58,8 @@ public class Bootstraper : MonoBehaviour
     
     private void StartHeadlessServer(string hostName, int serverPort)
     {
+        Application.targetFrameRate = 1;
+
         if (string.IsNullOrEmpty(hostName))
         {
             Debug.Log("No host name specified, set up server on 'localhost'.");

@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGameServer(IPAddress address, int port)
     {
+        Debug.Assert(this.server == null);
         this.server = new GameServer(address, port, System.TimeSpan.FromSeconds(this.clientConnectionCheckTimeoutInSeconds), this.durationBetweenTwoTicks);
         this.server.Start();
     }

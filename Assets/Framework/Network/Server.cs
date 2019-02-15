@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Framework.Network
 {
@@ -72,7 +73,11 @@ namespace Framework.Network
             try
             {
                 // Start TcpServer background thread
-                this.tcpListenerThread = new Thread(this.ListenForData) { IsBackground = true };
+                this.tcpListenerThread = new Thread(this.ListenForData)
+                {
+                    Name = "Network Server",
+                    IsBackground = true
+                };
                 this.tcpListenerThread.Start();
                 this.state = InterfaceState.Started;
             }
@@ -161,6 +166,8 @@ namespace Framework.Network
         /// </summary> 	
         private void ListenForData()
         {
+            Profiler.BeginThreadProfiling("Network", "Network Server");
+
             try
             {
                 byte[] readBuffer = new byte[4096];
@@ -245,7 +252,7 @@ namespace Framework.Network
                             this.clients[clientIndex] = client;
                         }
 
-                        Thread.Sleep(1);
+                        Thread.Sleep(10);
                     }
                 }
             }
@@ -257,6 +264,8 @@ namespace Framework.Network
             {
                 Debug.LogError("[Server] Exception: " + exception);
             }
+
+            Profiler.EndThreadProfiling();
         }
 
         public struct Client

@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Framework.Network
 {
@@ -50,7 +51,11 @@ namespace Framework.Network
             {
                 this.writeStream = new MemoryStream();
                 this.writer = new BinaryWriter(this.writeStream);
-                this.clientReceiveThread = new Thread(this.ListenForData) { IsBackground = true };
+                this.clientReceiveThread = new Thread(this.ListenForData)
+                {
+                    Name = "Network Client",
+                    IsBackground = true
+                };
                 this.clientReceiveThread.Start();
                 this.state = InterfaceState.Started;
             }
@@ -106,6 +111,8 @@ namespace Framework.Network
         
         private void ListenForData()
         {
+            Profiler.BeginThreadProfiling("Network", "Network Client");
+
             try
             {
                 byte[] readBuffer = new byte[4096];
@@ -177,6 +184,8 @@ namespace Framework.Network
             {
                 Debug.LogError($"[{this}] Exception: " + exception);
             }
+
+            Profiler.EndThreadProfiling();
         }
 
         public void Dispose()
