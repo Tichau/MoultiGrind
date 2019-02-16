@@ -6,8 +6,9 @@
 
         CreateGame,
         JoinGame,
-        LeaveGame,
+        ListGames,
 
+        LeaveGame,
         ChangeGameSpeed,
 
         CraftRecipe,

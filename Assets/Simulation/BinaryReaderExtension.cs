@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using Framework;
 using Simulation.Data;
+using Simulation.Network;
 
 namespace Simulation
 {
@@ -27,6 +29,11 @@ namespace Simulation
             durationBetweenTwoTicks = stream.ReadUInt64();
             playerId = stream.ReadByte();
             stream.ParseGame(out game);
+        }
+        
+        public static void ReadListGamesOrder(this BinaryReader stream, out GameInstanceSummary[] gameSummaries)
+        {
+            gameSummaries = stream.ReadArray<GameInstanceSummary>();
         }
 
         public static void ParseGame(this BinaryReader stream, out Simulation.Game.Game game)

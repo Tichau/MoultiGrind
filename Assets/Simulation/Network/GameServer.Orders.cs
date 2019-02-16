@@ -80,5 +80,23 @@ namespace Simulation.Network
 
             return OrderStatus.Validated;
         }
+
+        [OrderServerPass(OrderType.ListGames)]
+        private OrderStatus ListGamesServerPass(BinaryReader dataFromClient, BinaryWriter dataToClient)
+        {
+            dataFromClient.ReadListGamesOrder(out var gameSummaries);
+
+            gameSummaries = new GameInstanceSummary[this.hostedGames.Count];
+            for (int index = 0; index < this.hostedGames.Count; index++)
+            {
+                gameSummaries[index] = new GameInstanceSummary(hostedGames[index]);
+            }
+
+            Debug.Log($"ListGames order send {this.hostedGames.Count} instance summaries.");
+
+            dataToClient.WriteListGamesOrder(gameSummaries);
+
+            return OrderStatus.Validated;
+        }
     }
 }

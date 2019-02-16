@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using Framework;
+using Simulation.Network;
 
 namespace Simulation
 {
@@ -24,6 +26,11 @@ namespace Simulation
             stream.Write(durationBetweenTwoTicks);
             stream.Write(playerId);
             stream.WriteGame(game);
+        }
+
+        public static void WriteListGamesOrder(this BinaryWriter stream, GameInstanceSummary[] gameSummaries)
+        {
+            stream.Write(gameSummaries);
         }
 
         public static void WriteGame(this BinaryWriter stream, Simulation.Game.Game game)
