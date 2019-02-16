@@ -16,6 +16,12 @@ namespace Framework
         public static T[] ReadArray<T>(this BinaryReader stream)
             where T : ISerializable, new()
         {
+            var isNull = stream.ReadBoolean();
+            if (isNull)
+            {
+                return null;
+            }
+
             var count = stream.ReadUInt16();
             var array = new T[count];
             for (int index = 0; index < count; index++)
@@ -30,6 +36,12 @@ namespace Framework
         public static List<T> ReadList<T>(this BinaryReader stream)
             where T : ISerializable, new()
         {
+            var isNull = stream.ReadBoolean();
+            if (isNull)
+            {
+                return null;
+            }
+
             var count = stream.ReadUInt16();
             var list = new List<T>(count);
             for (int index = 0; index < count; index++)

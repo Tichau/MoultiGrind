@@ -15,6 +15,13 @@ namespace Framework
         public static void Write<T>(this BinaryWriter stream, T[] array)
             where T : ISerializable
         {
+            var isNull = array == null;
+            stream.Write(isNull);
+            if (isNull)
+            {
+                return;
+            }
+
             stream.Write((ushort)array.Length);
             for (int index = 0; index < array.Length; index++)
             {
@@ -25,6 +32,13 @@ namespace Framework
         public static void Write<T>(this BinaryWriter stream, List<T> list)
             where T : ISerializable
         {
+            var isNull = list == null;
+            stream.Write(isNull);
+            if (isNull)
+            {
+                return;
+            }
+
             stream.Write((ushort)list.Count);
             for (int index = 0; index < list.Count; index++)
             {
