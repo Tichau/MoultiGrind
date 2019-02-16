@@ -42,9 +42,14 @@ public class GameManager : MonoBehaviour
         this.server.Start();
     }
 
-    public void ConnectToLocalServer()
+    public void ConnectToServer(string address)
     {
-        this.client = new GameClient("localhost", this.networkPort);
+        this.ConnectToServer(address, this.networkPort);
+    }
+
+    public void ConnectToServer(string address, int port)
+    {
+        this.client = new GameClient(address, port);
         this.client.Start();
     }
 

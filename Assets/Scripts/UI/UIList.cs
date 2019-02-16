@@ -12,7 +12,7 @@ namespace UI
 
         [UnityEngine.SerializeField]
         private UnityEngine.Transform listHolder = null;
-
+        
         protected virtual void Awake()
         {
             UnityEngine.Debug.Assert(this.prefab != null, "Prefab should be set.");
